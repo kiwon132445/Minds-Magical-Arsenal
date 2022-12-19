@@ -1,1 +1,1 @@
-# Mind-s-Magical-Arsenal
+# Mind's Magical Arsenal
