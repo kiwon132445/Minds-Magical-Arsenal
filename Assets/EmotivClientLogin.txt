@@ -1,0 +1,5 @@
+Client_id:
+nbmkUVeWCqgXvGcTqM02TE9WKieblVF6dJJOpRCR
+
+Client_Secret:
+QJN52MxHfh10uQ5dviXEjTQE7UKf3RlRbsvR9yE4zBuwTBhOHhHr1SWkyhoUP1cis0GEBEnVoqPVl0w21b0Phu1xDiaQPoL5merXAWKyigGq72wwOnEF5DjILIAQ9Bud

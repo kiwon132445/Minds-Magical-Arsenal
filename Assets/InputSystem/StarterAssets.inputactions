@@ -42,7 +42,7 @@
                     "initialStateCheck": false
                 },
                 {
-                    "name": "MagicMode",
+                    "name": "Magic",
                     "type": "Button",
                     "id": "f3f94907-db89-493f-9e62-90da45dae386",
                     "expectedControlType": "Button",
@@ -235,7 +235,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "MagicMode",
+                    "action": "Magic",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

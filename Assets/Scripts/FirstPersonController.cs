@@ -246,6 +246,10 @@ namespace StarterAssets
 			}
 		}
 
+		private void Magic() {
+			//Debug.Log(_controller.Magic);
+		}
+
 		private static float ClampAngle(float lfAngle, float lfMin, float lfMax)
 		{
 			if (lfAngle < -360f) lfAngle += 360f;
