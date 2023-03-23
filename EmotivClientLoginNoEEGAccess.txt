@@ -1,0 +1,5 @@
+Client ID:
+VRAt9DXJdeNN6b5XwUxBxXq2xnSAYsxxMcz4ZmOS
+
+Client Secret:
+sP3Oi2M30JYlLQJlzZGz45pUgzhotDVwjUsuLgWUTLE7drvsr3GzehgaaD7bO6tCdoa4PShACg4i80D3FM1NQ1yPdGJyqBvsDyFUQGy8CHeJKXt5rAh2jicsL0csWsMZ
