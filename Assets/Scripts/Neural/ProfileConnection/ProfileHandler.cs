@@ -1,6 +1,4 @@
 ﻿
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using System;
 using Zenject;
@@ -12,26 +10,34 @@ namespace dirox.emotiv.controller
     {
 
         ProfileController   _profileController;
-        ConnectionIndicatorGroup   _connectionIndicatorGroup;
         ProfileGroup		       _profileGroup;
-
-        ContactQualityController   _contactQualityController;
+        float _timerCounter_queryProfile = 0;
+        const float TIME_QUERY_Profile      = 2.0f;
 
         void Start()
         {
-            //DataProcessing.Instance.onHeadsetChange      += OnHeadsetChanged;
-            //DataProcessing.Instance.onCurrHeadsetRemoved += onCurrHeadsetRemoved;
+            TrainingProcessing.Instance.onProfileChange      += OnProfileChanged;
+            TrainingProcessing.Instance.onCurrProfileRemoved += onCurrProfileUnloaded;
+        }
+
+        private void Update()
+        {
+            _timerCounter_queryProfile += Time.deltaTime;
+            if (_timerCounter_queryProfile > TIME_QUERY_Profile) {
+                _timerCounter_queryProfile -= TIME_QUERY_Profile;
+                TrainingProcessing.Instance.Process();
+            }
         }
 
         [Inject]
-        public void InjectDependency(ProfileController profileController, ConnectionIndicatorGroup connectionIndicatorGroup, 
-                                     ProfileGroup profileGroup,
-                                     ContactQualityController contactQualityController)
+        public void InjectDependency(ProfileController profileController, //ConnectionIndicatorGroup connectionIndicatorGroup, 
+                                     ProfileGroup profileGroup)
+                                     //ContactQualityController contactQualityController)
         {
             _profileController = profileController;
-            _connectionIndicatorGroup = connectionIndicatorGroup;
+            //_connectionIndicatorGroup = connectionIndicatorGroup;
             _profileGroup             = profileGroup;
-            _contactQualityController = contactQualityController;
+            //_contactQualityController = contactQualityController;
         }
         
         private void OnProfileChanged(object sender, EventArgs args)
@@ -48,7 +54,7 @@ namespace dirox.emotiv.controller
         {
             _profileController.ClearProfileList ();
             
-            if (DataProcessing.Instance.GetHeadsetList().Count == 0) 
+            if (BCITraining.Instance.ProfileLists.Count == 0) 
                 return;
 
             foreach (string item in BCITraining.Instance.ProfileLists)
@@ -62,8 +68,8 @@ namespace dirox.emotiv.controller
 
         private void ShowProfileListForm()
         {
-            _contactQualityController.Deactivate();
-            _connectionIndicatorGroup.Deactivate ();
+            //_contactQualityController.Deactivate();
+           // _connectionIndicatorGroup.Deactivate ();
 
             _profileController.Refresh ();
             _profileController.Activate ();

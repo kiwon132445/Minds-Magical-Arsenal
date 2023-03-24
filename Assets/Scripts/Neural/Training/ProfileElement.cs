@@ -37,14 +37,14 @@ namespace dirox.emotiv.controller
             cableButton.image.sprite = cableSprite;
             cableButton.onClick.AddListener (startConnectToDevice);
             */
-            //DataProcessing.Instance.HeadsetConnected += connectSuccess;
-            //DataProcessing.Instance.HeadsetConnectFail += connectFailed;
+            TrainingProcessing.Instance.ProfileConnected += connectSuccess;
+            TrainingProcessing.Instance.ProfileConnectFail += connectFailed;
         }
 
         void OnDestroy()
         {
-            //DataProcessing.Instance.HeadsetConnected -= connectSuccess;
-            //DataProcessing.Instance.HeadsetConnectFail -= connectFailed;
+            TrainingProcessing.Instance.ProfileConnected -= connectSuccess;
+            TrainingProcessing.Instance.ProfileConnectFail -= connectFailed;
         }
         
         public ProfileElement SetName (string name)
@@ -62,7 +62,7 @@ namespace dirox.emotiv.controller
             return this;
         }*/
 
-        private void startConnectToDevice ()
+        private void startConnectToProfile ()
         {
             loadingLabel.gameObject.SetActive (true);
             /*
@@ -72,7 +72,7 @@ namespace dirox.emotiv.controller
             */
             loadButton.gameObject.SetActive (false);
             //List<string> dataStreamList = new List<string>(){DataStreamName.DevInfos};
-            //DataStreamManager.Instance.StartDataStream(dataStreamList, _profileInformation.HeadsetID);
+            //DataStreamManager.Instance.StartDataStream(dataStreamList, _headsetInformation.HeadsetID);
         }
         
         private void connectSuccess(object sender, string profileID)
@@ -83,8 +83,8 @@ namespace dirox.emotiv.controller
             if (_profileInformation.ProfileID == profileID) {
                 mainController.StartProfileForms (_profileInformation, () => {
                 });
-                //DataProcessing.Instance.EnableQueryHeadset(true);
-                //DataProcessing.Instance.SetConnectedHeadset (_profileInformation);
+                TrainingProcessing.Instance.EnableQueryProfile(true);
+                TrainingProcessing.Instance.SetConnectedProfile (_profileInformation);
             } else {
                 Debug.Log("Another profile connected or wrong somewhere");
             }
@@ -92,7 +92,7 @@ namespace dirox.emotiv.controller
 
         private void connectFailed(object sender, string profileID)
         {
-            //DataProcessing.Instance.EnableQueryHeadset(true);
+            TrainingProcessing.Instance.EnableQueryProfile(true);
         }
 
         #endregion

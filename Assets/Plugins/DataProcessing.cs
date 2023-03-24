@@ -38,7 +38,6 @@ public class DataProcessing
     RecordManager _recordManager = RecordManager.Instance;
 
     public event EventHandler onHeadsetChange;
-    public event EventHandler onProfileChange;
     public event EventHandler onCurrHeadsetRemoved;
     public event EventHandler onDetectManyDevices;
     public event EventHandler<string> HeadsetConnected;

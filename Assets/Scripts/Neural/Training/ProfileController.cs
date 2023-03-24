@@ -21,7 +21,8 @@ namespace dirox.emotiv.controller
         [SerializeField] Text  loadText;
 
         ProfileAdapter      _profileAdapter;
-        //ConnectedDevice            _connectedDevice;
+        ConnectedDevice            _connectedDevice;
+        TrainingProcessing _trainingProcessing = TrainingProcessing.Instance;
         //ContactQualityController   _contactQualityController;
         //UI_ConnectingToCortex      _connectingToCortex;
         //ConnectionIndicatorGroup   _connectionIndicatorGroup;
@@ -38,13 +39,13 @@ namespace dirox.emotiv.controller
 
         [Inject]
         public void InjectDependencies (/*UI_ConnectingToCortex connectingToCortex,*/ ProfileGroup profileGroup,
-                                        ProfileAdapter adapter // ConnectedDevice connectedDevice,
+                                        ProfileAdapter adapter, ConnectedDevice connectedDevice
                                         //ContactQualityController contactQualityController,
                                         //ConnectionIndicatorGroup connectionIndicatorGroup,
                                         /*HeadsetGroup headsetGroup*/)
         {
             _profileAdapter             = adapter;
-            //_connectedDevice            = connectedDevice;
+            _connectedDevice            = connectedDevice;
             //_contactQualityController   = contactQualityController;
             //_connectingToCortex         = connectingToCortex;
             //_connectionIndicatorGroup   = connectionIndicatorGroup;
@@ -135,6 +136,7 @@ namespace dirox.emotiv.controller
         */
         IEnumerator setProfile (Profile profileInformation, Action onConnected)
         {
+            BCITraining.Instance.LoadProfileWithHeadset(profileInformation.ProfileID, _connectedDevice.Information.HeadsetID);
             //_connectedDevice.Information = profileInformation;
             yield return null;
             onConnected.Invoke ();
