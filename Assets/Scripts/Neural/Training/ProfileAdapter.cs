@@ -3,6 +3,7 @@ using System;
 
 using EmotivUnityPlugin;
 
+//Primarily handles the ProfileElement Prefab implementations
 namespace dirox.emotiv.controller
 {
     public class ProfileAdapter
@@ -12,6 +13,7 @@ namespace dirox.emotiv.controller
         private ProfileElement.Factory factory;
 
         public event Action<ProfileElement> onNewItemReceived;
+        public event Action<ProfileElement> onRemoveItem;
         public event Action<ProfileElement> onClearItems;
 
         public ProfileAdapter (ProfileElement.Factory factory)
@@ -24,7 +26,24 @@ namespace dirox.emotiv.controller
         {
             profileList.Add (profile);
             if (onNewItemReceived != null)
-                onNewItemReceived.Invoke (factory.Create ().WithInformation (profile));
+                onNewItemReceived.Invoke (factory.Create ().WithInformationAdd (profile));
+        }
+
+        public void RemoveProfile (ProfileElement profile)
+        {
+            int count = 0;
+            string profileName = profile.GetName();
+            foreach (Profile p in profileList)
+            {
+                if (p.ProfileID == profile.GetName())
+                {
+                    profileList.RemoveAt(count);
+                    if (onRemoveItem != null)
+                        onRemoveItem.Invoke(profile);
+                    return;
+                }
+                count++;
+            }
         }
 
         public void ClearProfileList ()

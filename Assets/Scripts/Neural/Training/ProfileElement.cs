@@ -13,38 +13,25 @@ namespace dirox.emotiv.controller
 
         [SerializeField] private Text   nameField;
         [SerializeField] private Text   loadingLabel;
-        //[SerializeField] private Button dongleButton;
-        //[SerializeField] private Button bluetoothButton;
-        //[SerializeField] private Button cableButton;
         [SerializeField] private Button loadButton;
+        [SerializeField] private Button removeButton;
 
         private Profile _profileInformation;
 
-        bool _isLoaded = false; // fixed the issue get much of event from only 1 signal
+        bool _isLoaded = false;
 
         void Start ()
         {
-            /*
-            var dongleSprite = Resources.Load<Sprite>("btnDongle");
-            dongleButton.image.sprite = dongleSprite;
-            dongleButton.onClick.AddListener (startConnectToDevice);
-
-            var btleSprite = Resources.Load<Sprite>("btnBluetooth");
-            bluetoothButton.image.sprite = btleSprite;
-            bluetoothButton.onClick.AddListener (startConnectToDevice);
-
-            var cableSprite = Resources.Load<Sprite>("btnCable");
-            cableButton.image.sprite = cableSprite;
-            cableButton.onClick.AddListener (startConnectToDevice);
-            */
-            TrainingProcessing.Instance.ProfileConnected += connectSuccess;
-            TrainingProcessing.Instance.ProfileConnectFail += connectFailed;
+            loadButton.onClick.AddListener(startLoadingProfile);
+            removeButton.onClick.AddListener(startDeleteProfile);
+            //TrainingProcessing.Instance.ProfileConnected += connectSuccess;
+            //TrainingProcessing.Instance.ProfileConnectFail += connectFailed;
         }
 
         void OnDestroy()
         {
-            TrainingProcessing.Instance.ProfileConnected -= connectSuccess;
-            TrainingProcessing.Instance.ProfileConnectFail -= connectFailed;
+            //TrainingProcessing.Instance.ProfileConnected -= connectSuccess;
+            //TrainingProcessing.Instance.ProfileConnectFail -= connectFailed;
         }
         
         public ProfileElement SetName (string name)
@@ -53,29 +40,30 @@ namespace dirox.emotiv.controller
             return this;
         }
 
-        /*
-        public ProfileElement SetConnectionType (ConnectionType connectionType)
+        public string GetName()
         {
-            dongleButton.gameObject.SetActive (connectionType    == ConnectionType.CONN_TYPE_DONGLE);
-            bluetoothButton.gameObject.SetActive (connectionType == ConnectionType.CONN_TYPE_BTLE);
-            cableButton.gameObject.SetActive (connectionType     == ConnectionType.CONN_TYPE_USB_CABLE);
-            return this;
-        }*/
+            return this.nameField.text;
+        }
 
-        private void startConnectToProfile ()
+        private void startLoadingProfile ()
         {
             loadingLabel.gameObject.SetActive (true);
-            /*
-            dongleButton.gameObject.SetActive (false);
-            bluetoothButton.gameObject.SetActive (false);
-            cableButton.gameObject.SetActive (false);
-            */
             loadButton.gameObject.SetActive (false);
+            removeButton.gameObject.SetActive (false);
+            loadSuccess(this._profileInformation.ProfileID);
             //List<string> dataStreamList = new List<string>(){DataStreamName.DevInfos};
             //DataStreamManager.Instance.StartDataStream(dataStreamList, _headsetInformation.HeadsetID);
         }
+
+        private void startDeleteProfile()
+        {
+            loadingLabel.gameObject.SetActive (true);
+            loadButton.gameObject.SetActive (false);
+            removeButton.gameObject.SetActive (false);
+            removeSuccess(this._profileInformation.ProfileID);
+        }
         
-        private void connectSuccess(object sender, string profileID)
+        private void loadSuccess(string profileID)
         {
             if(_isLoaded)
                 return;
@@ -85,6 +73,21 @@ namespace dirox.emotiv.controller
                 });
                 TrainingProcessing.Instance.EnableQueryProfile(true);
                 TrainingProcessing.Instance.SetConnectedProfile (_profileInformation);
+            } else {
+                Debug.Log("Another profile loaded or wrong somewhere");
+            }
+        }
+
+        private void removeSuccess(string profileID)
+        {
+            if(_isLoaded)
+                return;
+            Destroy(gameObject);
+            if (_profileInformation.ProfileID == profileID) {
+                mainController.StartProfileDelete (this, () => {
+                });
+                TrainingProcessing.Instance.EnableQueryProfile(true);
+                TrainingProcessing.Instance.UnsetConnectedProfile (_profileInformation);
             } else {
                 Debug.Log("Another profile connected or wrong somewhere");
             }
@@ -109,7 +112,7 @@ namespace dirox.emotiv.controller
 
         #endregion
 
-        public ProfileElement WithInformation (Profile info)
+        public ProfileElement WithInformationAdd (Profile info)
         {
             this._profileInformation = info;
             SetName (this._profileInformation.ProfileID);

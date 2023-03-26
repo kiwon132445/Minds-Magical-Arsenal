@@ -10,10 +10,11 @@ public class TrainingProcessing
     Dictionary<string, dirox.emotiv.controller.Profile> _profileList = new Dictionary<string, dirox.emotiv.controller.Profile>();
 
     public event EventHandler onProfileChange;
-    public event EventHandler onCurrProfileRemoved;
-    public event EventHandler onDetectManyProfiles;
-    public event EventHandler<string> ProfileConnected;
-    public event EventHandler<string> ProfileConnectFail;
+    public event EventHandler onCurrProfileUnloaded;
+    public event EventHandler onCurrProfileDeleted;
+    //public event EventHandler onDetectManyProfiles;
+    //public event EventHandler<string> ProfileConnected;
+    //public event EventHandler<string> ProfileConnectFail;
 
     dirox.emotiv.controller.Profile _curProfileConnected = null;
 
@@ -34,11 +35,40 @@ public class TrainingProcessing
         }
     }
 
+    public void CreateProfile(string profileID)
+    {
+        BCITraining.Instance.CreateProfile(profileID);
+    }
+
+    public void LoadProfileWithHeadset(string profileID, string headsetID)
+    {
+        BCITraining.Instance.LoadProfileWithHeadset(profileID, headsetID);
+    }
+
+    public void UnloadProfile(string profileID, string headsetID)
+    {
+        BCITraining.Instance.UnLoadProfile(profileID, headsetID);
+    }
+
+    public void DeleteProfile(string profileName, string headsetId)
+    {
+        string cortexToken = Authorizer.Instance.CortexToken;
+        CortexClient.Instance.SetupProfile(cortexToken, profileName, "delete", headsetId);
+    }
+
     public void SetConnectedProfile (dirox.emotiv.controller.Profile profile)
     {
         lock (_object) {
             // Debug.Log("======== SetConnectedProfile " + profile.ProfileID);
             _curProfileConnected = profile;
+        }
+    }
+
+    public void UnsetConnectedProfile (dirox.emotiv.controller.Profile profile)
+    {
+        lock (_object) {
+            // Debug.Log("======== SetConnectedProfile " + profile.ProfileID);
+            _curProfileConnected = null;
         }
     }
 
@@ -90,7 +120,7 @@ public class TrainingProcessing
             Debug.Log(item);
         }
 
-        // Detect the profile is not loaded
+        // Detect the profile is loaded
         if(_curProfileConnected != null)
         {
             bool isDisconnected = false;
@@ -103,8 +133,8 @@ public class TrainingProcessing
             if (isDisconnected) {
                 Debug.Log("TrainingProcessing:queryProfile - Disconnected the headset");
 
-                if (onCurrProfileRemoved != null)
-                    onCurrProfileRemoved(null, null);
+                if (onCurrProfileUnloaded != null)
+                    onCurrProfileUnloaded(null, null);
 
                 _curProfileConnected = null;
             }
@@ -130,10 +160,6 @@ public class TrainingProcessing
     {
         //Debug.Log("Training Process");
         lock (_object) {
-            if (!DataProcessing.Instance.IsHeadsetConnected())
-            {
-                return;
-            }
             //Debug.Log("Query");
             if (queryProfile () <= 0)
                 return;
@@ -143,5 +169,4 @@ public class TrainingProcessing
             }
         }
     }
-
 }

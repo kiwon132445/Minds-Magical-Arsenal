@@ -55,19 +55,18 @@ namespace dirox.emotiv.controller
 
             StartCoroutine(RunCoroutineDisplayColor(updateCQInterval));
         }
-
-        /*
+        
         public override void Deactivate ()
         {
-            
+            _profileGroup.Activate();
+            _profileController.Activate();
             headsetGroup.Deactivate ();
             base.Deactivate ();
-            StopAllCoroutines();
 
             if (activeDevice != null)
                 activeDevice.gameObject.SetActive(false);
             
-        }*/
+        }
 
         public void onButtonDone()
         {
@@ -77,10 +76,8 @@ namespace dirox.emotiv.controller
 
             // dataSubscriber.Activate();
             // connectionIndicatorGroup.Activate ();
-            _profileGroup.Activate();
-            _profileController.Activate();
-            headsetGroup.Deactivate ();
-            base.Deactivate();
+            
+            Deactivate();
         }
             
         public void QuickOpen() {

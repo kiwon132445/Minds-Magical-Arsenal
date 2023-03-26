@@ -15,19 +15,15 @@ namespace dirox.emotiv.controller
         [SerializeField] private Transform    profileList;
         [SerializeField] private GameObject   txtNote;
         [SerializeField] private CanvasScaler rootCanvasScaler;
-        [SerializeField]
-        private Image fadeImage;
+        [SerializeField] private Image fadeImage;
         [SerializeField] Image title;
         [SerializeField] Text  loadText;
+        [SerializeField] private GameObject profileInputField;
 
-        ProfileAdapter      _profileAdapter;
-        ConnectedDevice            _connectedDevice;
+        ProfileGroup profileGroup;
+        ProfileAdapter     _profileAdapter;
+        ConnectedDevice    _connectedDevice;
         TrainingProcessing _trainingProcessing = TrainingProcessing.Instance;
-        //ContactQualityController   _contactQualityController;
-        //UI_ConnectingToCortex      _connectingToCortex;
-        //ConnectionIndicatorGroup   _connectionIndicatorGroup;
-        //ContactQualityBaseManager  activeDevice;
-        //HeadsetGroup headsetGroup;
 
         Color tempColor;
         RectTransform canvasRect;
@@ -38,7 +34,7 @@ namespace dirox.emotiv.controller
         //bool _enableChecking = false;
 
         [Inject]
-        public void InjectDependencies (/*UI_ConnectingToCortex connectingToCortex,*/ ProfileGroup profileGroup,
+        public void InjectDependencies (/*UI_ConnectingToCortex connectingToCortex,*/ ProfileGroup group,
                                         ProfileAdapter adapter, ConnectedDevice connectedDevice
                                         //ContactQualityController contactQualityController,
                                         //ConnectionIndicatorGroup connectionIndicatorGroup,
@@ -46,6 +42,7 @@ namespace dirox.emotiv.controller
         {
             _profileAdapter             = adapter;
             _connectedDevice            = connectedDevice;
+            profileGroup               = group;
             //_contactQualityController   = contactQualityController;
             //_connectingToCortex         = connectingToCortex;
             //_connectionIndicatorGroup   = connectionIndicatorGroup;
@@ -57,6 +54,7 @@ namespace dirox.emotiv.controller
         private void init ()
         {
             this._profileAdapter.onNewItemReceived += addNewProfile;
+            this._profileAdapter.onRemoveItem      += removeProfile;
             this._profileAdapter.onClearItems      += clearProfileAll;
             tempColor = fadeImage.color;
             canvasRect = rootCanvasScaler.GetComponent<RectTransform>();
@@ -82,12 +80,24 @@ namespace dirox.emotiv.controller
                 title.rectTransform.anchoredPosition = new Vector2(title.rectTransform.anchoredPosition.x, yPos);
             }
         }
+
+        public void RefreshProfiles()
+        {
+            TrainingProcessing.Instance.Process();
+            //Refresh();
+        }
             
         private void addNewProfile (ProfileElement newProfile)
         {
             txtNote.SetActive (false);
             profileList.gameObject.SetActive (true);
             newProfile.transform.SetParent (profileList, false);
+        }
+
+        
+        private void removeProfile (ProfileElement profile)
+        {
+            Destroy(profile.gameObject);
         }
 
         private void clearProfileAll (ProfileElement newProfile)
@@ -102,45 +112,62 @@ namespace dirox.emotiv.controller
 
         public override void Deactivate ()
         {
-            //headsetGroup.Deactivate ();
-            base.Deactivate ();
+            profileGroup.Deactivate();
+            base.Deactivate();
             StopAllCoroutines();
-
-            /*
-            if (activeDevice != null)
-                activeDevice.gameObject.SetActive(false);*/
         }
 
         void showNextForm ()
         {
-            Deactivate ();
+            Deactivate();
             //_contactQualityController.Activate ();
             SceneManager.LoadScene("Main");
         }
 
-        public void StartProfileForms(Profile deviceInfo, Action onProgress)
+        public void CreateProfileForms(Profile profile, Action onProgress)
         {
             onProgress.Invoke ();
-            StartCoroutine (setProfile (deviceInfo, showNextForm));
+            StartCoroutine (createProfile (profile, RefreshProfiles));
+        }
+
+        public void StartProfileForms(Profile profile, Action onProgress)
+        {
+            onProgress.Invoke ();
+            StartCoroutine (setProfile (profile, showNextForm));
+        }
+
+        public void StartProfileDelete(ProfileElement profile, Action onProgress)
+        {
+            onProgress.Invoke ();
+            StartCoroutine (deleteProfile (profile, RefreshProfiles));
         }
 
         private YieldInstruction timeToWait = new WaitForSeconds (1);
 
-        /*
-        IEnumerator setConnect (Profile profileInformation, Action onConnected)
+        IEnumerator createProfile (Profile profileInformation, Action onCreated)
         {
-            _connectedDevice.Information = profileInformation;
+            TrainingProcessing.Instance.CreateProfile(profileInformation.ProfileID);
             yield return null;
-            onConnected.Invoke ();
+            onCreated.Invoke ();
         }
-        */
+
         IEnumerator setProfile (Profile profileInformation, Action onConnected)
         {
-            BCITraining.Instance.LoadProfileWithHeadset(profileInformation.ProfileID, _connectedDevice.Information.HeadsetID);
-            //_connectedDevice.Information = profileInformation;
+            TrainingProcessing.Instance.LoadProfileWithHeadset(profileInformation.ProfileID, _connectedDevice.Information.HeadsetID);
             yield return null;
             onConnected.Invoke ();
         }
+
+        IEnumerator deleteProfile (ProfileElement profileInformation, Action onRemoved)
+        {
+            Debug.Log("Delete profile: " + profileInformation.GetName());
+            TrainingProcessing.Instance.DeleteProfile(profileInformation.GetName(), _connectedDevice.Information.HeadsetID);
+            _profileAdapter.RemoveProfile(profileInformation);
+            yield return null;
+            onRemoved.Invoke ();
+
+        }
+
         public void AddAvailableProfile(Profile profileInfo) {
             // Debug.Log("AddAvailableDevice");
             _profileAdapter.AddProfile(profileInfo);
@@ -149,11 +176,10 @@ namespace dirox.emotiv.controller
         public void ClearProfileList() {
             _profileAdapter.ClearProfileList();
         }
-
         public override void Activate()
         {
-            //_enableChecking = true;
             base.Activate();
+            Refresh();
         }
 
         IEnumerator ChangeCanvasScaleMode(float delayTime, bool isProfileListForm)
@@ -171,45 +197,5 @@ namespace dirox.emotiv.controller
             yield return new WaitForSeconds(delayTime);
             fadeImage.DOColor(tempColor, delayTime);
         }
-        
-        /*
-        bool updateCortexStates ()
-        {
-            if (!_enableChecking)
-                return _enableChecking;
-
-            _timerCortex_state += Time.deltaTime;
-            if (_timerCortex_state < TIME_UPDATE_CORTEX_STATE)
-                return _enableChecking;
-
-            _timerCortex_state -= TIME_UPDATE_CORTEX_STATE;
-            var curState = DataStreamManager.Instance.GetConnectToCortexState();
-
-            if (_lastState == curState)
-                return _enableChecking;
-
-            _lastState = curState;
-            switch (curState) {
-                case ConnectToCortexStates.Service_connecting:
-                case ConnectToCortexStates.EmotivApp_NotFound:
-                case ConnectToCortexStates.Login_waiting:
-                case ConnectToCortexStates.Login_notYet:
-                case ConnectToCortexStates.Authorizing:
-                case ConnectToCortexStates.Authorize_failed:
-                case ConnectToCortexStates.LicenseExpried:
-                case ConnectToCortexStates.License_HardLimited: {
-                    _enableChecking = false;
-                    _connectionIndicatorGroup.Deactivate ();
-                    _connectingToCortex.Activate();
-
-                    break;
-                }
-                case ConnectToCortexStates.Authorized:
-                    break;
-            }
-
-            return _enableChecking;
-        }
-        */
     }
 }

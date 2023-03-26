@@ -58,7 +58,7 @@ namespace dirox.emotiv.controller
                 float ratio = canvasRect.rect.height / rootCanvasScaler.referenceResolution.y;
                 float yPos  = title.rectTransform.anchoredPosition.y * ratio;
 
-                yPos = Mathf.Clamp(yPos, connectText.rectTransform.anchoredPosition.y + connectText.rectTransform.rect.height + title.rectTransform.rect.height, title.rectTransform.anchoredPosition.y);
+                //yPos = Mathf.Clamp(yPos, connectText.rectTransform.anchoredPosition.y + connectText.rectTransform.rect.height + title.rectTransform.rect.height, title.rectTransform.anchoredPosition.y);
                 title.rectTransform.anchoredPosition = new Vector2(title.rectTransform.anchoredPosition.x, yPos);
             }
         }
@@ -72,7 +72,7 @@ namespace dirox.emotiv.controller
                 float ratio = canvasRect.rect.height / rootCanvasScaler.referenceResolution.y;
                 float yPos  = title.rectTransform.anchoredPosition.y * ratio;
 
-                yPos = Mathf.Clamp(yPos, connectText.rectTransform.anchoredPosition.y + connectText.rectTransform.rect.height + title.rectTransform.rect.height, title.rectTransform.anchoredPosition.y);
+                //yPos = Mathf.Clamp(yPos, connectText.rectTransform.anchoredPosition.y + connectText.rectTransform.rect.height + title.rectTransform.rect.height, title.rectTransform.anchoredPosition.y);
                 title.rectTransform.anchoredPosition = new Vector2(title.rectTransform.anchoredPosition.x, yPos);
             }
         }

@@ -17,7 +17,8 @@ namespace dirox.emotiv.controller
         void Start()
         {
             TrainingProcessing.Instance.onProfileChange      += OnProfileChanged;
-            TrainingProcessing.Instance.onCurrProfileRemoved += onCurrProfileUnloaded;
+            TrainingProcessing.Instance.onCurrProfileUnloaded += onCurrProfileUnloaded;
+            TrainingProcessing.Instance.onCurrProfileDeleted += onCurrProfileDeleted;
         }
 
         private void Update()
@@ -30,14 +31,10 @@ namespace dirox.emotiv.controller
         }
 
         [Inject]
-        public void InjectDependency(ProfileController profileController, //ConnectionIndicatorGroup connectionIndicatorGroup, 
-                                     ProfileGroup profileGroup)
-                                     //ContactQualityController contactQualityController)
+        public void InjectDependency(ProfileController profileController, ProfileGroup profileGroup)
         {
             _profileController = profileController;
-            //_connectionIndicatorGroup = connectionIndicatorGroup;
             _profileGroup             = profileGroup;
-            //_contactQualityController = contactQualityController;
         }
         
         private void OnProfileChanged(object sender, EventArgs args)
@@ -46,6 +43,11 @@ namespace dirox.emotiv.controller
         }
 
         private void onCurrProfileUnloaded(object sender, EventArgs args)
+        {
+            ShowProfileListForm();
+        }
+
+        private void onCurrProfileDeleted(object sender, EventArgs args)
         {
             ShowProfileListForm();
         }
@@ -68,9 +70,6 @@ namespace dirox.emotiv.controller
 
         private void ShowProfileListForm()
         {
-            //_contactQualityController.Deactivate();
-           // _connectionIndicatorGroup.Deactivate ();
-
             _profileController.Refresh ();
             _profileController.Activate ();
             ShowProfile ();

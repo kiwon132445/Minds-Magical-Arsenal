@@ -35,8 +35,8 @@ RectTransform:
   m_Father: {fileID: 224665130255300524}
   m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 1, y: 0.5}
-  m_AnchorMax: {x: 1, y: 0.5}
+  m_AnchorMin: {x: 0.98, y: 0.5}
+  m_AnchorMax: {x: 0.98, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 143, y: 32}
   m_Pivot: {x: 1, y: 0.5}
@@ -107,8 +107,7 @@ MonoBehaviour:
     m_ColorMultiplier: 1
     m_FadeDuration: 0
   m_SpriteState:
-    m_HighlightedSprite: {fileID: 21300000, guid: dd04682c387e7604ebe8b0da883d0e6c,
-      type: 3}
+    m_HighlightedSprite: {fileID: 21300000, guid: dd04682c387e7604ebe8b0da883d0e6c, type: 3}
     m_PressedSprite: {fileID: 21300000, guid: dd04682c387e7604ebe8b0da883d0e6c, type: 3}
     m_SelectedSprite: {fileID: 21300000, guid: dd04682c387e7604ebe8b0da883d0e6c, type: 3}
     m_DisabledSprite: {fileID: 0}
@@ -174,8 +173,8 @@ RectTransform:
   m_Father: {fileID: 224665130255300524}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 1, y: 0.5}
-  m_AnchorMax: {x: 1, y: 0.5}
+  m_AnchorMin: {x: 0.98, y: 0.5}
+  m_AnchorMax: {x: 0.98, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 143, y: 32}
   m_Pivot: {x: 1, y: 0.5}
@@ -246,8 +245,7 @@ MonoBehaviour:
     m_ColorMultiplier: 1
     m_FadeDuration: 0
   m_SpriteState:
-    m_HighlightedSprite: {fileID: 21300000, guid: 59ca4abce1225d04e8a618ac5551f956,
-      type: 3}
+    m_HighlightedSprite: {fileID: 21300000, guid: 59ca4abce1225d04e8a618ac5551f956, type: 3}
     m_PressedSprite: {fileID: 21300000, guid: 59ca4abce1225d04e8a618ac5551f956, type: 3}
     m_SelectedSprite: {fileID: 21300000, guid: 59ca4abce1225d04e8a618ac5551f956, type: 3}
     m_DisabledSprite: {fileID: 0}
@@ -311,8 +309,8 @@ RectTransform:
   m_Father: {fileID: 224665130255300524}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0.5}
-  m_AnchorMax: {x: 0, y: 0.5}
+  m_AnchorMin: {x: 0.02, y: 0.5}
+  m_AnchorMax: {x: 0.02, y: 0.5}
   m_AnchoredPosition: {x: 1, y: 0}
   m_SizeDelta: {x: 201, y: 49}
   m_Pivot: {x: 0, y: 0.5}
@@ -448,6 +446,8 @@ GameObject:
   m_Component:
   - component: {fileID: 224665130255300524}
   - component: {fileID: 114675757433468558}
+  - component: {fileID: 528732312407500908}
+  - component: {fileID: 2574596181803582903}
   m_Layer: 5
   m_Name: HeadsetItem
   m_TagString: Untagged
@@ -497,6 +497,44 @@ MonoBehaviour:
   dongleButton: {fileID: 114115151606288432}
   bluetoothButton: {fileID: 114299996371669638}
   cableButton: {fileID: 114249492514097124}
+--- !u!222 &528732312407500908
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1614975881556074}
+  m_CullTransparentMesh: 1
+--- !u!114 &2574596181803582903
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1614975881556074}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Material: {fileID: 0}
+  m_Color: {r: 0.35686275, g: 0.35686275, b: 0.35686275, a: 1}
+  m_RaycastTarget: 1
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_Maskable: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_Sprite: {fileID: 0}
+  m_Type: 0
+  m_PreserveAspect: 0
+  m_FillCenter: 1
+  m_FillMethod: 4
+  m_FillAmount: 1
+  m_FillClockwise: 1
+  m_FillOrigin: 0
+  m_UseSpriteMesh: 0
+  m_PixelsPerUnitMultiplier: 1
 --- !u!1 &1856542537549068
 GameObject:
   m_ObjectHideFlags: 0
@@ -532,8 +570,8 @@ RectTransform:
   m_Father: {fileID: 224665130255300524}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 1, y: 0.5}
-  m_AnchorMax: {x: 1, y: 0.5}
+  m_AnchorMin: {x: 0.98, y: 0.5}
+  m_AnchorMax: {x: 0.98, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 143, y: 32}
   m_Pivot: {x: 1, y: 0.5}
@@ -604,8 +642,7 @@ MonoBehaviour:
     m_ColorMultiplier: 1
     m_FadeDuration: 0.1
   m_SpriteState:
-    m_HighlightedSprite: {fileID: 21300000, guid: f840a391dd718427b80609239be94ca9,
-      type: 3}
+    m_HighlightedSprite: {fileID: 21300000, guid: f840a391dd718427b80609239be94ca9, type: 3}
     m_PressedSprite: {fileID: 21300000, guid: f840a391dd718427b80609239be94ca9, type: 3}
     m_SelectedSprite: {fileID: 21300000, guid: f840a391dd718427b80609239be94ca9, type: 3}
     m_DisabledSprite: {fileID: 0}
