@@ -17,10 +17,16 @@ public class Casting : MonoBehaviour
         _dsManager.SysEventsReceived += OnSysEventsReceived;
     }
 
+    private void OnDestroy() {
+        _dsManager.FacialExpReceived -= OnFacialExpReceived;
+        _dsManager.MentalCommandReceived -= OnMentalCommandReceived;
+        _dsManager.SysEventsReceived -= OnSysEventsReceived;
+    }
+
     private List<string> GetStreamsList() {
         List<string> _streams = new List<string> {};
         _streams.Add("sys");
-        _streams.Add("fac");
+        //_streams.Add("fac");
         _streams.Add("com");
         return _streams;
     }

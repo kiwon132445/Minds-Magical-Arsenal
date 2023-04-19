@@ -378,7 +378,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 3771786363159265786}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 3448288327844803886}
+        m_TargetAssemblyTypeName: dirox.emotiv.controller.ProfileElement, Assembly-CSharp
+        m_MethodName: StartDeleteProfile
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1 &5914930780799773627
 GameObject:
   m_ObjectHideFlags: 0
@@ -500,7 +512,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 670439066686837671}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 3448288327844803886}
+        m_TargetAssemblyTypeName: dirox.emotiv.controller.ProfileElement, Assembly-CSharp
+        m_MethodName: StartLoadingProfile
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1 &6294169442034021477
 GameObject:
   m_ObjectHideFlags: 0

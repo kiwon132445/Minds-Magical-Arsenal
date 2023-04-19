@@ -71,6 +71,8 @@ public class DataProcessing
     {
         DataStreamManager.Instance.SessionActivatedOK += OnSessionActivatedOK;
         DataStreamManager.Instance.LicenseValidTo  += onLicenseValidTo;
+        BCITraining.Instance.InformLoadUnLoadProfileDone += OnInformLoadUnLoadProfileDone;
+        CortexClient.Instance.DeleteProfileOK += DeleteProfileOK;
     }
     ~DataProcessing()
     {
@@ -323,6 +325,22 @@ public class DataProcessing
         lock (_object) {
             return _lastCQOverAll;
         }
+    }
+
+    private void OnInformLoadUnLoadProfileDone(object sender, bool isProfileLoaded)
+    {
+        if (isProfileLoaded)
+        {
+            Debug.Log("The profile is loaded successfully.");
+        }
+        else {
+            Debug.Log("The profile is unloaded successfully.");
+        }
+    }
+
+    private void DeleteProfileOK(object sender, string profileName)
+    {
+        Debug.Log("Profile " + profileName + " deletion confirmed");
     }
 
     // return number of headset discovered

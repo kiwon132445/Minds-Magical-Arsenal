@@ -16,7 +16,7 @@ public class SimpleExample : MonoBehaviour
     EmotivUnityItf _eItf = EmotivUnityItf.Instance;
     float _timerDataUpdate = 0;
     const float TIME_UPDATE_DATA = 1f;
-    bool _isDataBufferUsing = false; // default subscribed data will not saved to Data buffer
+    bool _isDataBufferUsing = true; // default subscribed data will not saved to Data buffer
 
 
     [SerializeField] public InputField  HeadsetId;   // headsetId

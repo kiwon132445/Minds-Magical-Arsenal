@@ -20,16 +20,8 @@ namespace dirox.emotiv.controller
 
         void Start ()
         {
-            loadButton.onClick.AddListener(startLoadingProfile);
-            removeButton.onClick.AddListener(startDeleteProfile);
-            //TrainingProcessing.Instance.ProfileConnected += connectSuccess;
-            //TrainingProcessing.Instance.ProfileConnectFail += connectFailed;
-        }
-
-        void OnDestroy()
-        {
-            //TrainingProcessing.Instance.ProfileConnected -= connectSuccess;
-            //TrainingProcessing.Instance.ProfileConnectFail -= connectFailed;
+            // loadButton.onClick.AddListener(startLoadingProfile);
+            // removeButton.onClick.AddListener(startDeleteProfile);
         }
         
         public ProfileElement SetName (string name)
@@ -43,49 +35,42 @@ namespace dirox.emotiv.controller
             return this.nameField.text;
         }
 
-        private void startLoadingProfile ()
+        public void StartLoadingProfile ()
         {
+            TrainingProcessing.Instance.EnableQueryProfile(false);
             loadingLabel.gameObject.SetActive (true);
             loadButton.gameObject.SetActive (false);
             removeButton.gameObject.SetActive (false);
             loadSuccess(this._profileInformation.ProfileID);
-            //List<string> dataStreamList = new List<string>(){DataStreamName.DevInfos};
-            //DataStreamManager.Instance.StartDataStream(dataStreamList, _headsetInformation.HeadsetID);
         }
 
-        private void startDeleteProfile()
+        public void StartDeleteProfile()
         {
+            TrainingProcessing.Instance.EnableQueryProfile(false);
             loadingLabel.gameObject.SetActive (true);
             loadButton.gameObject.SetActive (false);
             removeButton.gameObject.SetActive (false);
-            removeSuccess(this._profileInformation.ProfileID);
+            deleteSuccess(this._profileInformation.ProfileID);
         }
         
         private void loadSuccess(string profileID)
         {
             if (_profileInformation.ProfileID == profileID) {
-                mainController.StartProfileForms (_profileInformation, () => {
-                });
-                TrainingProcessing.Instance.EnableQueryProfile(true);
+                mainController.StartProfileForms (_profileInformation);
                 TrainingProcessing.Instance.SetConnectedProfile (_profileInformation);
             } else {
                 Debug.Log("Another profile loaded or wrong somewhere");
             }
+            TrainingProcessing.Instance.EnableQueryProfile(true);
         }
 
-        private void removeSuccess(string profileID)
+        private void deleteSuccess(string profileID)
         {
             if (_profileInformation.ProfileID == profileID) {
-                TrainingProcessing.Instance.EnableQueryProfile(true);
-                mainController.StartProfileDelete (this, () => {
-                });
+                mainController.StartProfileDelete (this);
             } else {
                 Debug.Log("Another profile connected or wrong somewhere");
             }
-        }
-
-        private void connectFailed(object sender, string profileID)
-        {
             TrainingProcessing.Instance.EnableQueryProfile(true);
         }
 

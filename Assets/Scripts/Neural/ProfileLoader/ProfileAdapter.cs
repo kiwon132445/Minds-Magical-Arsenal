@@ -38,7 +38,7 @@ namespace dirox.emotiv.controller
                     profileList.RemoveAt(count);
                     if (onRemoveItem != null)
                         onRemoveItem.Invoke(profile);
-                    profile.DestroySelf();
+                    // profile.DestroySelf();
                     return;
                 }
                 count++;

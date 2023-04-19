@@ -118,13 +118,13 @@ namespace dirox.emotiv.controller
             SceneManager.LoadScene("Main");
         }
 
-        public void StartProfileForms(Profile profile, Action onProgress)
+        public void StartProfileForms(Profile profile)
         {
             //onProgress.Invoke ();
             StartCoroutine (setProfile (profile, showNextForm));
         }
 
-        public void StartProfileDelete(ProfileElement profile, Action onProgress)
+        public void StartProfileDelete(ProfileElement profile)
         {
             //onProgress.Invoke ();
             StartCoroutine (deleteProfile (profile, RefreshProfiles));
@@ -132,13 +132,14 @@ namespace dirox.emotiv.controller
 
         public void StartSaveProfile()
         {
-            StartCoroutine (saveProfile (RefreshProfiles));
+            StartCoroutine (saveProfile ());
         }
 
         private YieldInstruction timeToWait = new WaitForSeconds (1);
 
         IEnumerator setProfile (Profile profileInformation, Action onConnected)
         {
+            Debug.Log("Loading Profile: " + profileInformation.ProfileID + " into headset: " + _connectedDevice.Information.HeadsetID);
             TrainingProcessing.Instance.LoadProfileWithHeadset(profileInformation.ProfileID, _connectedDevice.Information.HeadsetID);
             yield return null;
             onConnected.Invoke ();
@@ -153,11 +154,10 @@ namespace dirox.emotiv.controller
             onRemoved.Invoke ();
         }
 
-        IEnumerator saveProfile (Action onSaved)
+        IEnumerator saveProfile ()
         {
             TrainingProcessing.Instance.SaveCurProfile(_connectedDevice.Information.HeadsetID);
             yield return null;
-            onSaved.Invoke ();
         }
 
         public void AddAvailableProfile(Profile profileInfo) {
