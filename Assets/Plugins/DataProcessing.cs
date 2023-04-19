@@ -47,7 +47,7 @@ public class DataProcessing
         remove { DataStreamManager.Instance.HeadsetConnectFail -= value; }
     }
     
-    Headset _curHeadsetObjectConnected = null;
+    public Headset _curHeadsetObjectConnected = null;
 
     // This value is for fix issue that noted in description of the class. 
     // if it is null. the connected event is processed. or haven't no event yet. 

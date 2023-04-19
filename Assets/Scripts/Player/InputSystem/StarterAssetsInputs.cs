@@ -11,6 +11,9 @@ namespace StarterAssets
 		public bool jump;
 		public bool sprint;
 
+		public bool cast;
+		public bool train;
+
 		[Header("Movement Settings")]
 		public bool analogMovement;
 
@@ -41,6 +44,15 @@ namespace StarterAssets
 			SprintInput(value.isPressed);
 		}
 
+		public void OnCast(InputValue value)
+		{
+			CastInput(value.isPressed);
+		}
+		public void OnTrain(InputValue value)
+		{
+			TrainInput(value.isPressed);
+		}
+
 
 		public void MoveInput(Vector2 newMoveDirection)
 		{
@@ -61,6 +73,16 @@ namespace StarterAssets
 		{
 			sprint = newSprintState;
 		}
+
+		public void CastInput(bool castState)
+		{
+			cast = castState;
+		}
+
+		public void TrainInput(bool trainState)
+		{
+			train = trainState;
+		}
 		
 		private void OnApplicationFocus(bool hasFocus)
 		{
@@ -72,7 +94,7 @@ namespace StarterAssets
 			SetCursorState(cursorLocked);
 		}
 
-		private void SetCursorState(bool newState)
+		public void SetCursorState(bool newState)
 		{
 			Cursor.lockState = newState ? CursorLockMode.Locked : CursorLockMode.None;
 		}

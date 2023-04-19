@@ -3,6 +3,7 @@ using UnityEngine;
 using System;
 using Zenject;
 using EmotivUnityPlugin;
+using System.Collections.Generic;
 
 namespace dirox.emotiv.controller
 {
@@ -17,8 +18,7 @@ namespace dirox.emotiv.controller
         void Start()
         {
             TrainingProcessing.Instance.onProfileChange      += OnProfileChanged;
-            TrainingProcessing.Instance.onCurrProfileUnloaded += onCurrProfileUnloaded;
-            TrainingProcessing.Instance.onCurrProfileDeleted += onCurrProfileDeleted;
+            TrainingProcessing.Instance.onCurrProfileChanged += onCurrProfileChanged;
         }
 
         private void Update()
@@ -42,29 +42,24 @@ namespace dirox.emotiv.controller
             ShowProfile();
         }
 
-        private void onCurrProfileUnloaded(object sender, EventArgs args)
-        {
-            ShowProfileListForm();
-        }
-
-        private void onCurrProfileDeleted(object sender, EventArgs args)
+        private void onCurrProfileChanged(object sender, EventArgs args)
         {
             ShowProfileListForm();
         }
 
         private void ShowProfile()
         {
+            _profileController.Refresh ();
             _profileController.ClearProfileList ();
             
-            if (BCITraining.Instance.ProfileLists.Count == 0) 
+            if (TrainingProcessing.Instance.GetProfileList().Count == 0) 
                 return;
-
-            foreach (string item in BCITraining.Instance.ProfileLists)
+            foreach (KeyValuePair<string, Profile> item in TrainingProcessing.Instance.GetProfileList())
             {
-                if (item == "")
+                if (item.Key == "")
                     continue;
                 
-                _profileController.AddAvailableProfile(new Profile(item));
+                _profileController.AddAvailableProfile(new Profile(item.Key));
             }
         }
 

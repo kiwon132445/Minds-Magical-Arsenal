@@ -2,6 +2,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 using Zenject;
+using EmotivUnityPlugin;
 
 namespace dirox.emotiv.controller
 {
@@ -32,6 +33,8 @@ namespace dirox.emotiv.controller
         IEnumerator RunCoroutineDisplayQualityLevel(float timeInterval) {
             while(this.IsActive) {
                 yield return new WaitForSeconds(timeInterval);
+                // Debug.Log("Quality indicator running");
+                // Debug.Log("DataProcessing current headset = " + DataProcessing.Instance._curHeadsetObjectConnected);
                 SetQualityIndicator((int)DataProcessing.Instance.GetCQOverAll());
             }
         }

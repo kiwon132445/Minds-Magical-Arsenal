@@ -47,6 +47,13 @@ namespace StarterAssets
 		[Tooltip("How far in degrees can you move the camera down")]
 		public float BottomClamp = -90.0f;
 
+		[Tooltip("Magic Object containing casting object space")]
+		public GameObject _game;
+
+		[Tooltip("Magic Object containing casting object space")]
+		public GameObject _magic;
+		public MagicManager _magicManager;
+
 		// cinemachine
 		private float _cinemachineTargetPitch;
 
@@ -101,6 +108,7 @@ namespace StarterAssets
 			JumpAndGravity();
 			GroundedCheck();
 			Move();
+			MagicCast();
 		}
 
 		private void LateUpdate()
@@ -249,6 +257,24 @@ namespace StarterAssets
 
 			// when selected, draw a gizmo in the position of, and matching radius of, the grounded collider
 			Gizmos.DrawSphere(new Vector3(transform.position.x, transform.position.y - GroundedOffset, transform.position.z), GroundedRadius);
+		}
+
+		private void MagicCast()
+		{
+			if(!_input.cast && !_input.train)
+				return;
+			
+			_magic.SetActive(true);
+			if (_input.cast)
+			{
+				_magicManager.CastingMode(true);
+			}
+			else
+			{
+				_magicManager.CastingMode(false);
+			}
+			Cursor.lockState = CursorLockMode.None;
+			_game.SetActive(false);
 		}
 	}
 }

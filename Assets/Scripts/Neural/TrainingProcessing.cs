@@ -8,17 +8,15 @@ public class TrainingProcessing
     static TrainingProcessing _instance = null;
     static readonly object _object = new object();
     Dictionary<string, dirox.emotiv.controller.Profile> _profileList = new Dictionary<string, dirox.emotiv.controller.Profile>();
+    Dictionary<string, dirox.emotiv.controller.Profile> _deletedProfileList = new Dictionary<string, dirox.emotiv.controller.Profile>();
 
     public event EventHandler onProfileChange;
-    public event EventHandler onCurrProfileUnloaded;
-    public event EventHandler onCurrProfileDeleted;
-    //public event EventHandler onDetectManyProfiles;
-    //public event EventHandler<string> ProfileConnected;
-    //public event EventHandler<string> ProfileConnectFail;
+    public event EventHandler onCurrProfileChanged;
 
+    private BCITraining _bciTraining = BCITraining.Instance;
     dirox.emotiv.controller.Profile _curProfileConnected = null;
 
-    bool _enableQueryProfile  = true;
+    bool _enableQueryProfile  = false;
     bool _isConnect           = false;
     
     ~TrainingProcessing()
@@ -35,25 +33,40 @@ public class TrainingProcessing
         }
     }
 
-    public void CreateProfile(string profileID)
+    public int CreateProfile(string profileID)
     {
-        BCITraining.Instance.CreateProfile(profileID);
+        if (_profileList.ContainsKey(profileID)) {
+            Debug.Log("Profile with the name " + profileID + " exists, delete existing profile before creating a new profile");
+            return -1;
+        }
+        //BCITraining.Instance.WantedProfileName = profileID;
+        _bciTraining.CreateProfile(profileID);
+        if (_deletedProfileList.ContainsKey(profileID))
+            _deletedProfileList.Remove(profileID);
+        Process();
+        return 0;
     }
 
     public void LoadProfileWithHeadset(string profileID, string headsetID)
     {
-        BCITraining.Instance.LoadProfileWithHeadset(profileID, headsetID);
+        _bciTraining.LoadProfileWithHeadset(profileID, headsetID);
     }
 
     public void UnloadProfile(string profileID, string headsetID)
     {
-        BCITraining.Instance.UnLoadProfile(profileID, headsetID);
+        _bciTraining.UnLoadProfile(profileID, headsetID);
     }
 
-    public void DeleteProfile(string profileName, string headsetId)
+    public void DeleteProfile(string profileName)
     {
         string cortexToken = Authorizer.Instance.CortexToken;
-        CortexClient.Instance.SetupProfile(cortexToken, profileName, "delete", headsetId);
+        CortexClient.Instance.SetupProfile(cortexToken, profileName, "delete");
+        _deletedProfileList[profileName] = new dirox.emotiv.controller.Profile(profileName);
+    }
+
+    public void SaveCurProfile(string headsetID)
+    {
+        _bciTraining.SaveProfile(_curProfileConnected.ProfileID, headsetID);
     }
 
     public void SetConnectedProfile (dirox.emotiv.controller.Profile profile)
@@ -93,7 +106,7 @@ public class TrainingProcessing
         }
     }
 
-    public Dictionary<string, dirox.emotiv.controller.Profile> GetHeadsetList()
+    public Dictionary<string, dirox.emotiv.controller.Profile> GetProfileList()
     {
         lock (_object) {
             return _profileList;
@@ -116,8 +129,11 @@ public class TrainingProcessing
 
         _profileList.Clear();
         foreach (var item in detectedProfile) {
-            _profileList[item] = new dirox.emotiv.controller.Profile(item);
-            Debug.Log(item);
+            if (!_deletedProfileList.ContainsKey(item))
+            {
+                _profileList[item] = new dirox.emotiv.controller.Profile(item);
+                Debug.Log(item);
+            }
         }
 
         // Detect the profile is loaded
@@ -126,15 +142,13 @@ public class TrainingProcessing
             bool isDisconnected = false;
             if (!_profileList.ContainsKey(_curProfileConnected.ProfileID)) {
                 isDisconnected = true;
-            } else {
-                //isDisconnected = (_profileList[_curProfileConnected.ProfileID].Status == HeadsetConnectionStatus.DISCOVERED);
             }
 
             if (isDisconnected) {
                 Debug.Log("TrainingProcessing:queryProfile - Disconnected the headset");
 
-                if (onCurrProfileUnloaded != null)
-                    onCurrProfileUnloaded(null, null);
+                if (onCurrProfileChanged != null)
+                    onCurrProfileChanged(null, null);
 
                 _curProfileConnected = null;
             }

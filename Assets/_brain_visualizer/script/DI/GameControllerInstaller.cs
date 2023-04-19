@@ -46,8 +46,6 @@ namespace dirox.emotiv
             bindIndicators ();
             bindCortexGroup();
             bindProfileLoader();
-            //bindExamplesBoard();
-            //bindDataSubscriber();
         }
 
         private void bindConnectHeadset ()
@@ -114,15 +112,5 @@ namespace dirox.emotiv
             Container.BindInstance (trialExpried);
             Container.BindInstance (offlineUseLimit);
         }
-
-        // private void bindDataSubscriber()
-        // {
-        //     Container.BindInstance(dataSubscriber);
-        // }
-
-        // private void bindExamplesBoard()
-        // {
-        //     Container.BindInstance(examplesBoard);
-        // }
     }
 }
