@@ -59,7 +59,10 @@ namespace dirox.emotiv.controller
                 title.rectTransform.anchoredPosition = new Vector2(title.rectTransform.anchoredPosition.x, yPos);
             }
         }
-
+        private void OnDestroy()
+        {
+            //StartCoroutine (saveProfile());
+        }
         public void Refresh () 
         {						
             StartCoroutine(ChangeCanvasScaleMode(FADE_IN_TIME, true));
@@ -139,6 +142,7 @@ namespace dirox.emotiv.controller
 
         IEnumerator setProfile (Profile profileInformation, Action onConnected)
         {
+            _trainingProcessing.StaticHeadset = _connectedDevice.Information;
             Debug.Log("Loading Profile: " + profileInformation.ProfileID + " into headset: " + _connectedDevice.Information.HeadsetID);
             TrainingProcessing.Instance.LoadProfileWithHeadset(profileInformation.ProfileID, _connectedDevice.Information.HeadsetID);
             yield return null;

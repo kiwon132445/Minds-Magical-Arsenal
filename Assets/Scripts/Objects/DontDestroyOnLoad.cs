@@ -2,6 +2,11 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+/**
+* Don't Destroy on Load tutorial
+* https://www.youtube.com/watch?v=HXaFLm3gQws
+*/
+
 public class DontDestroyOnLoad : MonoBehaviour
 {
     [HideInInspector]

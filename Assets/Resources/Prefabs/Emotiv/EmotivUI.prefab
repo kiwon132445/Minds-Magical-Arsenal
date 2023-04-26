@@ -486,6 +486,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 9210871894456876492}
     m_Modifications:
+    - target: {fileID: 85662932090480818, guid: 4344bd2ff1e107d4d89126ab59f6cbd7, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 16.099976
+      objectReference: {fileID: 0}
     - target: {fileID: 214428896852189073, guid: 4344bd2ff1e107d4d89126ab59f6cbd7, type: 3}
       propertyPath: fadeImage
       value: 
@@ -613,6 +617,10 @@ PrefabInstance:
     - target: {fileID: 2537816046306445826, guid: 4344bd2ff1e107d4d89126ab59f6cbd7, type: 3}
       propertyPath: m_Name
       value: Profile
+      objectReference: {fileID: 0}
+    - target: {fileID: 2657422265179854059, guid: 4344bd2ff1e107d4d89126ab59f6cbd7, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: -1.605011
       objectReference: {fileID: 0}
     - target: {fileID: 4114623645435848711, guid: 4344bd2ff1e107d4d89126ab59f6cbd7, type: 3}
       propertyPath: m_SizeDelta.x

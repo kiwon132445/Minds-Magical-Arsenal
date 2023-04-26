@@ -51,9 +51,18 @@
                     "initialStateCheck": false
                 },
                 {
-                    "name": "Train",
+                    "name": "MagicSpace",
                     "type": "Button",
-                    "id": "87efbe16-fb7f-4644-8cd2-468871968061",
+                    "id": "19d3daff-1ed1-454e-834d-643cbe4a76c2",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "Option",
+                    "type": "Button",
+                    "id": "fc85ae34-6881-4b92-9d38-580c1149360f",
                     "expectedControlType": "Button",
                     "processors": "",
                     "interactions": "",
@@ -240,8 +249,8 @@
                 {
                     "name": "",
                     "id": "8af0bf8f-d023-40d3-89be-8bb6210a549e",
-                    "path": "<Keyboard>/e",
-                    "interactions": "",
+                    "path": "<Mouse>/leftButton",
+                    "interactions": "Press(behavior=2)",
                     "processors": "",
                     "groups": "KeyboardMouse",
                     "action": "Cast",
@@ -250,12 +259,23 @@
                 },
                 {
                     "name": "",
-                    "id": "82f8f1c2-3d13-41af-8cf3-7057a35ae815",
-                    "path": "<Keyboard>/q",
+                    "id": "af10684c-20ec-46fd-929b-1d83804973a4",
+                    "path": "<Keyboard>/e",
                     "interactions": "",
                     "processors": "",
                     "groups": "KeyboardMouse",
-                    "action": "Train",
+                    "action": "MagicSpace",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "bef1b833-caf7-4b1d-83c8-ffbfb94a998a",
+                    "path": "<Keyboard>/escape",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "KeyboardMouse",
+                    "action": "Option",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

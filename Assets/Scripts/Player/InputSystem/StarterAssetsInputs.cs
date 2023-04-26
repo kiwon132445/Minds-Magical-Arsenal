@@ -12,7 +12,8 @@ namespace StarterAssets
 		public bool sprint;
 
 		public bool cast;
-		public bool train;
+		public bool magicSpace;
+		public bool option;
 
 		[Header("Movement Settings")]
 		public bool analogMovement;
@@ -48,9 +49,13 @@ namespace StarterAssets
 		{
 			CastInput(value.isPressed);
 		}
-		public void OnTrain(InputValue value)
+		public void OnMagicSpace(InputValue value)
 		{
-			TrainInput(value.isPressed);
+			MagicSpaceInput(value.isPressed);
+		}
+		public void OnOption(InputValue value)
+		{
+			OptionInput(value.isPressed);
 		}
 
 
@@ -79,9 +84,13 @@ namespace StarterAssets
 			cast = castState;
 		}
 
-		public void TrainInput(bool trainState)
+		public void MagicSpaceInput(bool magicSpaceState)
 		{
-			train = trainState;
+			magicSpace = magicSpaceState;
+		}
+		public void OptionInput(bool optionState)
+		{
+			option = optionState;
 		}
 		
 		private void OnApplicationFocus(bool hasFocus)
@@ -97,6 +106,17 @@ namespace StarterAssets
 		public void SetCursorState(bool newState)
 		{
 			Cursor.lockState = newState ? CursorLockMode.Locked : CursorLockMode.None;
+		}
+
+		public void ResetControls()
+		{
+			move = Vector2.zero;
+			look = Vector2.zero;
+			jump = false;
+			sprint = false;
+			cast = false;
+			magicSpace = false;
+			option = false;
 		}
 	}
 	

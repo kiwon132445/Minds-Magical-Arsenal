@@ -18,6 +18,13 @@ public class TrainingProcessing
 
     bool _enableQueryProfile  = false;
     bool _isConnect           = false;
+    public static Headset headset;
+
+    public Headset StaticHeadset   // property
+  {
+    get { return headset; }   // get method
+    set { headset = value; }  // set method
+  }
     
     ~TrainingProcessing()
     {

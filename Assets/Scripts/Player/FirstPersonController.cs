@@ -47,12 +47,15 @@ namespace StarterAssets
 		[Tooltip("How far in degrees can you move the camera down")]
 		public float BottomClamp = -90.0f;
 
-		[Tooltip("Magic Object containing casting object space")]
+		[Tooltip("Game Object containing the game")]
 		public GameObject _game;
 
 		[Tooltip("Magic Object containing casting object space")]
 		public GameObject _magic;
 		public MagicManager _magicManager;
+		public SpellCasting _spellCasting;
+
+		public bool Flying;
 
 		// cinemachine
 		private float _cinemachineTargetPitch;
@@ -105,10 +108,14 @@ namespace StarterAssets
 
 		private void Update()
 		{
+			Options();
+			MagicLoadSpell();
+			Cast();
 			JumpAndGravity();
 			GroundedCheck();
-			Move();
-			MagicCast();
+			if (!Flying)
+				Move();
+			
 		}
 
 		private void LateUpdate()
@@ -194,49 +201,51 @@ namespace StarterAssets
 
 		private void JumpAndGravity()
 		{
-			if (Grounded)
+			if (!Flying)
 			{
-				// reset the fall timeout timer
-				_fallTimeoutDelta = FallTimeout;
-
-				// stop our velocity dropping infinitely when grounded
-				if (_verticalVelocity < 0.0f)
+				if (Grounded)
 				{
-					_verticalVelocity = -2f;
-				}
+					// reset the fall timeout timer
+					_fallTimeoutDelta = FallTimeout;
 
-				// Jump
-				if (_input.jump && _jumpTimeoutDelta <= 0.0f)
+					// stop our velocity dropping infinitely when grounded
+					if (_verticalVelocity < 0.0f)
+					{
+						_verticalVelocity = -2f;
+					}
+
+					// Jump
+					if (_input.jump && _jumpTimeoutDelta <= 0.0f)
+					{
+						// the square root of H * -2 * G = how much velocity needed to reach desired height
+						_verticalVelocity = Mathf.Sqrt(JumpHeight * -2f * Gravity);
+					}
+
+					// jump timeout
+					if (_jumpTimeoutDelta >= 0.0f)
+					{
+						_jumpTimeoutDelta -= Time.deltaTime;
+					}
+				}
+				else
 				{
-					// the square root of H * -2 * G = how much velocity needed to reach desired height
-					_verticalVelocity = Mathf.Sqrt(JumpHeight * -2f * Gravity);
-				}
+					// reset the jump timeout timer
+					_jumpTimeoutDelta = JumpTimeout;
 
-				// jump timeout
-				if (_jumpTimeoutDelta >= 0.0f)
+					// fall timeout
+					if (_fallTimeoutDelta >= 0.0f)
+					{
+						_fallTimeoutDelta -= Time.deltaTime;
+					}
+
+					// if we are not grounded, do not jump
+					_input.jump = false;
+				}
+				// apply gravity over time if under terminal (multiply by delta time twice to linearly speed up over time)
+				if (_verticalVelocity < _terminalVelocity)
 				{
-					_jumpTimeoutDelta -= Time.deltaTime;
+					_verticalVelocity += Gravity * Time.deltaTime;
 				}
-			}
-			else
-			{
-				// reset the jump timeout timer
-				_jumpTimeoutDelta = JumpTimeout;
-
-				// fall timeout
-				if (_fallTimeoutDelta >= 0.0f)
-				{
-					_fallTimeoutDelta -= Time.deltaTime;
-				}
-
-				// if we are not grounded, do not jump
-				_input.jump = false;
-			}
-
-			// apply gravity over time if under terminal (multiply by delta time twice to linearly speed up over time)
-			if (_verticalVelocity < _terminalVelocity)
-			{
-				_verticalVelocity += Gravity * Time.deltaTime;
 			}
 		}
 
@@ -259,22 +268,43 @@ namespace StarterAssets
 			Gizmos.DrawSphere(new Vector3(transform.position.x, transform.position.y - GroundedOffset, transform.position.z), GroundedRadius);
 		}
 
-		private void MagicCast()
+		private void MagicLoadSpell()
 		{
-			if(!_input.cast && !_input.train)
+			if(!_input.magicSpace)
 				return;
 			
-			_magic.SetActive(true);
-			if (_input.cast)
-			{
-				_magicManager.CastingMode(true);
-			}
-			else
-			{
-				_magicManager.CastingMode(false);
-			}
+			//_magic.SetActive(true);
+			GameManager.Instance.ActivateMagic(true);
+
+			_magicManager.Activate();
 			Cursor.lockState = CursorLockMode.None;
-			_game.SetActive(false);
+			_input.ResetControls();
+			//_game.SetActive(false);
+			GameManager.Instance.ActivateGame(false);
+		}
+
+		private void Cast()
+		{
+			if (_input.cast)
+				_spellCasting.ActivateSpell(true);
+			else
+				_spellCasting.ActivateSpell(false);
+		}
+
+		private void Options()
+		{
+			if(!_input.option)
+				return;
+
+			_input.ResetControls();
+			Cursor.lockState = CursorLockMode.None;
+			PlayerInputActive(false);
+			GameManager.Instance.ActivateOptions(true);
+		}
+
+		public void PlayerInputActive(bool active)
+		{
+			_playerInput.enabled = active;
 		}
 	}
 }
