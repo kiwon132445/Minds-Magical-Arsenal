@@ -13,8 +13,10 @@ public class SpellCasting : MonoBehaviour
     [SerializeField] SubscribeTrain _subscribeTrain;
     [SerializeField] TMP_Text spellText;
     [SerializeField] TMP_Text mentalCommandText;
+    [SerializeField] TMP_Text cooldownText;
     [SerializeField] float max_force = 10.0f;
-    public static string currentSpell = "Fire Ball";
+    [SerializeField] GameObject aura;
+    public static string currentSpell = "Flight";
     static readonly object _object = new object();  
 
     private float _curSpellCD;
@@ -28,7 +30,7 @@ public class SpellCasting : MonoBehaviour
     #region Neural
     private bool subscribed;
     private static string _mcText = "";
-    private static string action = "lift";
+    private static string action = "";
     private static double power = 0.5;
     private static double currentTime = 0;
     private double lastUpdatedTime = 0;
@@ -63,8 +65,8 @@ public class SpellCasting : MonoBehaviour
 
                 //Default values if not subscribed for testing
                 power = 0.5;
-                action = "lift";
-                _mcText = "lift 0.5";
+                action = "right";
+                _mcText = "right 0.5";
             }
             _spellActive = status;
         }
@@ -77,13 +79,23 @@ public class SpellCasting : MonoBehaviour
         
         if (!string.IsNullOrWhiteSpace(currentSpell))
         {
-            if (_spellOnCD)
+            if (_spellOnCD && _curSpellCD != 0)
             {
                 cooldownStatus += Time.deltaTime;
                 if (cooldownStatus-cooldownStartTime >= _curSpellCD) {
                     Debug.Log("Cooldown Finished");
                     _spellOnCD = false;
+                    cooldownText.text = "Ready";
                 }
+                else
+                {
+                    cooldownText.text = ((int) (_curSpellCD - cooldownStatus)).ToString();
+                }
+            }
+            else
+            {
+                cooldownText.text = "Ready";
+                _spellOnCD = false;
             }
             
             
@@ -103,7 +115,9 @@ public class SpellCasting : MonoBehaviour
         }
         if (!_spellActive)
         {
-            //Debug.Log("Spell not active");
+            Debug.Log("Spell not active");
+            if(aura.activeSelf)
+                aura.SetActive(false);
             _selectionManager.ObjectInUse = false;
             _fPController.Flying = false;
         }
@@ -139,8 +153,7 @@ public class SpellCasting : MonoBehaviour
 
     private void ActivateSpell()
     {
-        lock(_object)
-        {
+
             switch(_type)
             {
                 case Spells.SpellType.Arrow:
@@ -160,7 +173,7 @@ public class SpellCasting : MonoBehaviour
                     Telekinesis(true);
                     break;
             }
-        }
+
     }
 
     private void SpawnProjectile()
@@ -176,29 +189,38 @@ public class SpellCasting : MonoBehaviour
 
     private void Telekinesis(bool self=false)
     {
-        if (self)
+        lock(_object)
         {
-            Debug.Log("Flying");
-            if (currentTime>lastUpdatedTime)
+            if (!aura.activeSelf)
+                aura.SetActive(true);
+            if (self)
             {
-                Spells.SpellSymbols sym = RecognizeSymbol(action);
-                Move(gameObject, self, sym, power);
-            }
-        }
-        else
-        {
-            Debug.Log("Telekinesis");
-            _selectionManager.ObjectInUse = true;
-
-            if (currentTime>lastUpdatedTime)
-            {
-                if (_selectionManager.SelectedObject != null)
-                {
+                
+                // if (currentTime>lastUpdatedTime)
+                // {
+                    Debug.Log("Flying");
                     Spells.SpellSymbols sym = RecognizeSymbol(action);
-                    Move(_selectionManager.SelectedObject, self, sym, power);
-                }
+                    Move(gameObject, self, sym, power);
+                // }
             }
+            else
+            {
+                
+                _selectionManager.ObjectInUse = true;
+
+                // if (currentTime>lastUpdatedTime)
+                // {
+                    Debug.Log("Telekinesis");
+                    if (_selectionManager.SelectedObject != null)
+                    {
+                        Spells.SpellSymbols sym = RecognizeSymbol(action);
+                        Move(_selectionManager.SelectedObject, self, sym, power);
+                    }
+                // }
+            }
+            // lastUpdatedTime = currentTime;
         }
+        
     }
 
     #region Neural spells
@@ -235,12 +257,14 @@ public class SpellCasting : MonoBehaviour
 
     private void MentalUpdate(object sender, MentalCommandEventArgs data)
     {
-        Debug.Log("Mental Command Received");
-        action = data.Act;
-        power = data.Pow;
-        lastUpdatedTime = currentTime;
-        currentTime = data.Time;
-        _mcText = action + " [" + power + "]";
+        lock(_object)
+        {
+            Debug.Log("Mental Command Received");
+            action = data.Act;
+            power = data.Pow;
+            currentTime = data.Time;
+            _mcText = action + " [" + power + "]";
+        }
     }
 
     private Spells.SpellSymbols RecognizeSymbol(string symbol)
@@ -252,13 +276,13 @@ public class SpellCasting : MonoBehaviour
       case "pull":
         return Spells.SpellSymbols.Pull;
       case  "right":
-        return Spells.SpellSymbols.Right;
-      case "left":
-        return Spells.SpellSymbols.Left;
-      case "lift":
         return Spells.SpellSymbols.Lift;
-      case "drop":
+      case "left":
         return Spells.SpellSymbols.Drop;
+    //   case "lift":
+    //     return Spells.SpellSymbols.Lift;
+    //   case "drop":
+    //     return Spells.SpellSymbols.Drop;
       default:
         return Spells.SpellSymbols.None;
     }

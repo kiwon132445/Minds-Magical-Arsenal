@@ -20,9 +20,21 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1663604753035441166, guid: 7c0f42790b957b64482d558619be8b13, type: 3}
+      propertyPath: m_Time
+      value: 0.15
+      objectReference: {fileID: 0}
+    - target: {fileID: 1663604753035441166, guid: 7c0f42790b957b64482d558619be8b13, type: 3}
+      propertyPath: m_Materials.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1663604753035441166, guid: 7c0f42790b957b64482d558619be8b13, type: 3}
       propertyPath: m_Materials.Array.data[0]
       value: 
       objectReference: {fileID: 2100000, guid: 89ecfad730bf7c7439c724f75fecec02, type: 2}
+    - target: {fileID: 1663604753035441166, guid: 7c0f42790b957b64482d558619be8b13, type: 3}
+      propertyPath: m_Parameters.numCornerVertices
+      value: 6
+      objectReference: {fileID: 0}
     - target: {fileID: 2863534145489352914, guid: 7c0f42790b957b64482d558619be8b13, type: 3}
       propertyPath: m_Mesh
       value: 
@@ -85,7 +97,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6691018188531885847, guid: 7c0f42790b957b64482d558619be8b13, type: 3}
       propertyPath: m_VersionIndex
-      value: 9514
+      value: 9517
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 7c0f42790b957b64482d558619be8b13, type: 3}

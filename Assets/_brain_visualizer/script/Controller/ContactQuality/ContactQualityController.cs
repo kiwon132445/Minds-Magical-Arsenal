@@ -70,13 +70,6 @@ namespace dirox.emotiv.controller
 
         public void onButtonDone()
         {
-            //Deactivate();
-            /*Next scene movement*/
-            //examplesBoard.Activate();
-
-            // dataSubscriber.Activate();
-            // connectionIndicatorGroup.Activate ();
-            
             Deactivate();
         }
             

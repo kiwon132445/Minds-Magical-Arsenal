@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 2863534146344851518}
   m_Layer: 0
   m_Name: Arrow (Ice)
-  m_TagString: Untagged
+  m_TagString: Projectile
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -194,7 +194,7 @@ TrailRenderer:
       m_Mode: 0
       m_NumColorKeys: 2
       m_NumAlphaKeys: 2
-    numCornerVertices: 0
+    numCornerVertices: 6
     numCapVertices: 0
     alignment: 0
     textureMode: 0

@@ -6,13 +6,13 @@ public class ProjectileBehaviour : MonoBehaviour
 {
   public float speed = 10;
   private Rigidbody _rigid;
-  private float startingTime;
+  private float currentTime;
 
   const float DELETE_TIME = 3;
 
   private void Start() {
     _rigid = gameObject.GetComponent<Rigidbody>();
-    startingTime = Time.deltaTime;
+    currentTime += Time.deltaTime;
   }
   private void Update() {
     DestroyCountdown();
@@ -31,7 +31,8 @@ public class ProjectileBehaviour : MonoBehaviour
 
   private void DestroyCountdown()
   {
-    if(Time.deltaTime - startingTime >= DELETE_TIME)
+    currentTime += Time.deltaTime;
+    if(currentTime >= DELETE_TIME)
     {
       Destroy(gameObject);
     }

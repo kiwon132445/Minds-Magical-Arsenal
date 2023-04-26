@@ -35,7 +35,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 0, y: 0.67}
   m_SizeDelta: {x: 1, y: 1}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!23 &1612188284629053131
@@ -625,7 +625,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &1612188284867425735
 Transform:
   m_ObjectHideFlags: 0
@@ -998,7 +998,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 0, y: 0.79}
   m_SizeDelta: {x: 1, y: 1}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!23 &1612188284931545893
@@ -1207,7 +1207,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 0, y: 0.79}
   m_SizeDelta: {x: 1, y: 1}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!23 &1612188284962748415
@@ -1691,8 +1691,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 0}
   m_AnchorMax: {x: 1, y: 0}
-  m_AnchoredPosition: {x: -20, y: 40}
-  m_SizeDelta: {x: 300, y: 100}
+  m_AnchoredPosition: {x: -20, y: 20}
+  m_SizeDelta: {x: 300, y: 103.1}
   m_Pivot: {x: 1, y: 0}
 --- !u!222 &1612188285123357253
 CanvasRenderer:
@@ -1867,10 +1867,10 @@ RectTransform:
   m_Father: {fileID: 1612188285123357275}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0.5}
-  m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -1.5, y: 50}
-  m_SizeDelta: {x: 300, y: 50}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 1, y: 1}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: -10, y: -10}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &1612188285166151476
 CanvasRenderer:
@@ -1907,7 +1907,9 @@ MonoBehaviour:
     R-Key: Select current
     node
 
-    C-Key: Switch between casting and training mode'
+    C-Key: Reset Magic space
+
+    E-Key: Exit Magic Space'
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -1934,15 +1936,15 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 15
+  m_fontSize: 21.75
   m_fontSizeBase: 15
   m_fontWeight: 400
-  m_enableAutoSizing: 0
+  m_enableAutoSizing: 1
   m_fontSizeMin: 18
   m_fontSizeMax: 72
   m_fontStyle: 1
   m_HorizontalAlignment: 1
-  m_VerticalAlignment: 256
+  m_VerticalAlignment: 512
   m_textAlignment: 65535
   m_characterSpacing: 0
   m_wordSpacing: 0
@@ -2153,7 +2155,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 99677faa020cb2c4baca15a9db239782, type: 2}
+  - {fileID: 2100000, guid: 4614fa80d57818749b6021c76dc09c54, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -2606,20 +2608,23 @@ MonoBehaviour:
 
     Ice Arrow: [Pull, Left, Right, Push]
 
-    Freeze aura: [Lift, Left,
+    Freeze Ball: [Lift, Left,
     Right, Drop]
 
     Poison Arrow: [Pull, Drop, Push]
 
-    Poison fog: [Pull, Drop,
+    Poison Ball: [Pull, Drop,
     Lift, Drop]
+
+    Earth Arrow: [Pull, Lift, Push]
+
+    Earth Ball: [Pull, Lift,
+    Pull, Push]
 
     Telekinesis: [Push, Pull, Left, Right, Lift, Drop]
 
     Flight:
-    [Lift, Lift, Lift]
-
-    Mud shot: [Pull, Lift, Push]'
+    [Push, Pull, Right, Left, Lift, Lift]'
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -3827,9 +3832,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1612188285792448307}
-  - component: {fileID: 1612188285792448316}
+  - component: {fileID: 1600640123}
   m_Layer: 0
-  m_Name: Spells
+  m_Name: SpellDisplay
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3858,7 +3863,7 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 500, y: 500}
   m_Pivot: {x: 0, y: 1}
---- !u!114 &1612188285792448316
+--- !u!114 &1600640123
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -3906,7 +3911,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 0, y: 0.79}
   m_SizeDelta: {x: 1, y: 1}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!23 &1612188285818256840
@@ -4167,7 +4172,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 1612188286630746972}
         m_TargetAssemblyTypeName: MagicManager, Assembly-CSharp
-        m_MethodName: AcceptTraining
+        m_MethodName: RejectTraining
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -4194,7 +4199,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1612188285901849184
 RectTransform:
   m_ObjectHideFlags: 0
@@ -5752,8 +5757,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1612188285792448316}
-        m_TargetAssemblyTypeName: SpellList, Assembly-CSharp
+      - m_Target: {fileID: 1600640123}
+        m_TargetAssemblyTypeName: SpellDisplay, Assembly-CSharp
         m_MethodName: ToggleDisplay
         m_Mode: 1
         m_Arguments:
@@ -6512,10 +6517,10 @@ RectTransform:
   m_Father: {fileID: 1612188285123357275}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0.5}
-  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 320, y: 160}
+  m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &1612188286524354493
 CanvasRenderer:
@@ -6806,7 +6811,6 @@ GameObject:
   - component: {fileID: 1612188286630746963}
   - component: {fileID: 1612188286630746972}
   - component: {fileID: 1612188286630746975}
-  - component: {fileID: 1612188286630746968}
   - component: {fileID: 1612188286630746974}
   m_Layer: 0
   m_Name: Magic
@@ -6866,7 +6870,7 @@ MonoBehaviour:
   _mcDisplayText: {fileID: 1612188284861580454}
   _patternText: {fileID: 1612188284931394952}
   _countdown: {fileID: 1612188284783882952}
-  _subscribeTrain: {fileID: 1612188286630746968}
+  _subscribeTrain: {fileID: 0}
   _trainingResultUI: {fileID: 1612188286618233201}
   _trainingResult: {fileID: 1612188286618233203}
 --- !u!114 &1612188286630746975
@@ -6882,18 +6886,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _magicManager: {fileID: 1612188286630746972}
---- !u!114 &1612188286630746968
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1612188286630746961}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d9431f2ca94a5b648a5d4df32418b7ea, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &1612188286630746974
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -27,7 +27,6 @@ public class MagicControls : MonoBehaviour
     public void OnForceCast(InputValue value)
     {
         Debug.Log("OnForceCast");
-        Debug.Log(value.Get<Vector3>());
     }
 
     public void OnResetMode(InputValue value)

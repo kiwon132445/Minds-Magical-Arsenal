@@ -32,7 +32,7 @@ public class SubscribeTrain : MonoBehaviour
 
     private List<string> GetStreamsList() {
         List<string> _streams = new List<string> {};
-        _streams.Add("sys");
+        // _streams.Add("sys");
         //_streams.Add("fac");
         _streams.Add("com");
         return _streams;

@@ -33,7 +33,7 @@ public class MagicManager : MonoBehaviour
   private static string action = "";
   private static double power = 0.0;
   private static double currentTime = 0.0;
-  private static double lastUpdatedTime = 0;
+  private static double lastUpdatedTime = 0.0;
 
   private int countTrained = 0;
   private double powerSum = 0.0;
@@ -56,9 +56,9 @@ public class MagicManager : MonoBehaviour
   public void Deactivate()
   {
     ReturnToDefault();
-    _game.SetActive(true);
+    GameManager.Instance.ActivateGame(true);
     Cursor.lockState = CursorLockMode.Locked;
-    gameObject.SetActive(false);
+    GameManager.Instance.ActivateMagic(false);
   }
 
   public void Activate()
@@ -69,81 +69,85 @@ public class MagicManager : MonoBehaviour
 
   public void BeginTraining()
   {
-    _isTraining = true;
-    countTrained = 0;
-    powerSum = 0.0;
-    trainingStartTime = currentTime;
-    _subscribeTrain.StartTrain(trainingChoice.captionText.text.ToLower());
-    trainingTarget = RecognizeSymbol(trainingChoice.captionText.text.ToLower());
-    _controlNode.Training(trainingTarget);
+      _isTraining = true;
+      countTrained = 0;
+      powerSum = 0.0;
+      trainingStartTime = currentTime;
+      _subscribeTrain.StartTrain(trainingChoice.captionText.text.ToLower());
+      trainingTarget = RecognizeSymbol(trainingChoice.captionText.text.ToLower());
+      _controlNode.Training(trainingTarget);
   }
   private void Countdown()
   {
-    if(currentTime - trainingStartTime >= trainingTimeLimit)
-    {
-      StopTraining();
-      _countdown.text = 0.ToString();
-    }
-    else
-    {
-      _countdown.text = ((int)(trainingTimeLimit-(currentTime-trainingStartTime))).ToString();
-    }
+      if(currentTime - trainingStartTime >= trainingTimeLimit)
+      {
+        StopTraining();
+        _countdown.text = 0.ToString();
+      }
+      else
+      {
+        _countdown.text = ((int)(trainingTimeLimit-(currentTime-trainingStartTime))).ToString();
+      }
   }
   public void StopTraining()
   {
-    Debug.Log("Training Complete");
-    double score = powerSum / countTrained * 100;
-    _trainingResult.DisplayScore(score);
-    _trainingResultUI.SetActive(true);
-    _isTraining = false;
-    _controlNode.StopTraining();
+      Debug.Log("Training Complete");
+      double score = powerSum / countTrained * 100;
+      _trainingResult.DisplayScore(score);
+      _trainingResultUI.SetActive(true);
+      _isTraining = false;
+      _controlNode.StopTraining();
   }
-
+ 
   public void AcceptTraining()
   {
-    _subscribeTrain.StopTrain(true);
-    _trainingProcessing.SaveCurProfile(_trainingProcessing.StaticHeadset.HeadsetID);
-    ReturnToDefault(true);
+      _subscribeTrain.StopTrain(true);
+      Debug.Log(_trainingProcessing.StaticHeadset.HeadsetID);
+      _trainingProcessing.SaveCurProfile(_trainingProcessing.StaticHeadset.HeadsetID);
+      ReturnToDefault(true);
   }
   public void RejectTraining()
   {
-    _subscribeTrain.StopTrain(false);
-    _trainingProcessing.SaveCurProfile(_trainingProcessing.StaticHeadset.HeadsetID);
-    ReturnToDefault(true);
+      _subscribeTrain.StopTrain(false);
+      _trainingProcessing.SaveCurProfile(_trainingProcessing.StaticHeadset.HeadsetID);
+      ReturnToDefault(true);
   }
   public void ReturnToDefault(bool butPressed=false)
   {
-    _mcText = "";
-    action = "";
-    power = 0.0;
-    currentTime = 0.0;
+      _mcText = "";
+      action = "";
+      power = 0.0;
+      currentTime = 0.0;
 
-    lastUpdatedTime = 0;
-    countTrained = 0;
-    powerSum = 0.0;
-    trainingStartTime = 0.0;
-    trainingTarget = Spells.SpellSymbols.None;
-    _isTraining = false;
-    formula = null;   
-    _trainingResult.DisplayScore(0);
+      lastUpdatedTime = 0;
+      countTrained = 0;
+      powerSum = 0.0;
+      trainingStartTime = 0.0;
+      trainingTarget = Spells.SpellSymbols.None;
+      _isTraining = false;
+      formula = null;   
+      _trainingResult.DisplayScore(0);
 
-    if (_trainingResultUI.activeSelf && !butPressed)
-    {
-      _trainingResultUI.SetActive(false);
-      _subscribeTrain.StopTrain(false);
-      _trainingProcessing.SaveCurProfile(_trainingProcessing.StaticHeadset.HeadsetID);
-    }
+      if (_trainingResultUI.activeSelf && butPressed)
+      {
+        _trainingResultUI.SetActive(false);
+        _subscribeTrain.StopTrain(false);
+        _trainingProcessing.SaveCurProfile(_trainingProcessing.StaticHeadset.HeadsetID);
+      }
 
-    _controlNode.ResetPos();
+      _controlNode.ResetPos();
   }
 
   private void MentalUpdate(object sender, MentalCommandEventArgs data)
   {
-    action = data.Act;
-    power = data.Pow;
-    lastUpdatedTime = currentTime;
-    currentTime = data.Time;
-    _mcText = action + " [" + power + "]";
+    lock(_object)
+    {
+      Debug.Log("Mental Update Received");
+      action = data.Act;
+      power = data.Pow;
+      currentTime = data.Time;
+      _mcText = action + " [" + power + "]";
+    }
   }
 
   private Spells.SpellSymbols RecognizeSymbol(string symbol)
@@ -158,10 +162,10 @@ public class MagicManager : MonoBehaviour
         return Spells.SpellSymbols.Right;
       case "left":
         return Spells.SpellSymbols.Left;
-      case "lift":
-        return Spells.SpellSymbols.Lift;
-      case "drop":
-        return Spells.SpellSymbols.Drop;
+      // case "lift":
+      //   return Spells.SpellSymbols.Lift;
+      // case "drop":
+      //   return Spells.SpellSymbols.Drop;
       default:
         return Spells.SpellSymbols.None;
     }
@@ -290,34 +294,38 @@ public class MagicManager : MonoBehaviour
 
   private bool MatchFormula(List<Spells.SpellSymbols> spell, List<Spells.SpellSymbols> formula)
   {
-    if (spell.Count != formula.Count)
-      return false;
-    for (int i = 0; i < spell.Count; i++)
-    {
-
-      if (formula[i] != spell[i])
-      {
+      if (spell.Count != formula.Count)
         return false;
+      for (int i = 0; i < spell.Count; i++)
+      {
+
+        if (formula[i] != spell[i])
+        {
+          return false;
+        }
       }
-    }
-    return true;
+      return true;
   }
-  
   private void Update()
   {
     printFormula();
     _mcDisplayText.text = _mcText;
-    if (currentTime>lastUpdatedTime)
+    lock (_object)
     {
-      Spells.SpellSymbols sym = RecognizeSymbol(action);
-      if(_isTraining)
-      {
-        Countdown();
-        countTrained++;
-        if (sym == trainingTarget)
-          {powerSum += power;}
+      if (currentTime>lastUpdatedTime)
+        {
+          Spells.SpellSymbols sym = RecognizeSymbol(action);
+          if(_isTraining)
+          {
+            Countdown();
+            countTrained++;
+            if (sym == trainingTarget)
+              {powerSum += power;}
+          }
+          _controlNode.Move(sym, power);
+          lastUpdatedTime = currentTime;
+        }
       }
-      _controlNode.Move(sym, power);
     }
-  }
+    
 }
