@@ -6,8 +6,13 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
-    path: Assets/Scenes/Playground.unity
-    guid: 707acc8dffb72b144bb1ffbe1c965f3d
+    path: Assets/Scenes/Start.unity
+    guid: 408505546607edd4f9f9cc39249a5670
+  - enabled: 1
+    path: Assets/Scenes/NeuralHeadset.unity
+    guid: 55e9ff21bd764ab42a55b0893f0e44f4
+  - enabled: 1
+    path: Assets/Scenes/Main.unity
+    guid: 9fc0d4010bbf28b4594072e72b8655ab
   m_configObjects:
-    com.unity.input.settings: {fileID: 11400000, guid: 9e7be553448fa2546aea5752021cbcf7,
-      type: 2}
+    com.unity.input.settings: {fileID: 11400000, guid: 5e94a2a64c393b7438dd89fdd71dcfc0, type: 2}

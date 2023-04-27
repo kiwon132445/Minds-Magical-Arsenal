@@ -5,17 +5,20 @@ TagManager:
   serializedVersion: 2
   tags:
   - CinemachineTarget
+  - Object
+  - Projectile
+  - SpawnPoint
   layers:
   - Default
   - TransparentFX
   - Ignore Raycast
-  - 
+  - Ground
   - Water
   - UI
+  - Player
+  - Mob
+  - Object
   - 
-  - 
-  - Character
-  - Ground
   - 
   - 
   - 
