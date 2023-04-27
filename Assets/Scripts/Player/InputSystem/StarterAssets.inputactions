@@ -33,6 +33,15 @@
                     "initialStateCheck": false
                 },
                 {
+                    "name": "Drop",
+                    "type": "Button",
+                    "id": "80b362ef-e78e-460e-92bd-1460b6095425",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
                     "name": "Sprint",
                     "type": "PassThrough",
                     "id": "980e881e-182c-404c-8cbf-3d09fdb48fef",
@@ -63,6 +72,15 @@
                     "name": "Option",
                     "type": "Button",
                     "id": "fc85ae34-6881-4b92-9d38-580c1149360f",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "ShowControl",
+                    "type": "Button",
+                    "id": "d921e241-da25-4501-b4f8-b5905b7e5d62",
                     "expectedControlType": "Button",
                     "processors": "",
                     "interactions": "",
@@ -206,7 +224,7 @@
                     "name": "",
                     "id": "1bd55a0b-761e-4ae4-89ae-8ec127e08a29",
                     "path": "<Keyboard>/space",
-                    "interactions": "",
+                    "interactions": "Press(behavior=2)",
                     "processors": "",
                     "groups": "KeyboardMouse",
                     "action": "Jump",
@@ -276,6 +294,28 @@
                     "processors": "",
                     "groups": "KeyboardMouse",
                     "action": "Option",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "b905d605-9c0d-41eb-8992-7782697b0489",
+                    "path": "<Keyboard>/ctrl",
+                    "interactions": "Press(behavior=2)",
+                    "processors": "",
+                    "groups": "KeyboardMouse",
+                    "action": "Drop",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "6a7f70e3-9653-4364-a3d4-069bafd55ed2",
+                    "path": "<Keyboard>/tab",
+                    "interactions": "Press(behavior=2)",
+                    "processors": "",
+                    "groups": "KeyboardMouse",
+                    "action": "ShowControl",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

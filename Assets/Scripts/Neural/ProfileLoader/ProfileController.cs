@@ -175,7 +175,7 @@ namespace dirox.emotiv.controller
         public override void Activate()
         {
             base.Activate();
-            Refresh();
+            //Refresh();
             eventSystem.SetActive(true);
             TrainingProcessing.Instance.EnableQueryProfile(true);
         }

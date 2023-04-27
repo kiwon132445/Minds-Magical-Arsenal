@@ -34,15 +34,15 @@ public class Spells
   public static Dictionary<string, List<SpellSymbols>> Formula = new Dictionary<string, List<SpellSymbols>>()
   {
     {"Fire Arrow", new List<SpellSymbols>{SpellSymbols.Pull, SpellSymbols.Right, SpellSymbols.Left, SpellSymbols.Push}},
-    {"Fire Ball", new List<SpellSymbols>{SpellSymbols.Push, SpellSymbols.Right, SpellSymbols.Left, SpellSymbols.Left}},
+    {"Fire Ball", new List<SpellSymbols>{SpellSymbols.Push, SpellSymbols.Right, SpellSymbols.Left, SpellSymbols.Lift}},
     {"Ice Arrow", new List<SpellSymbols>{SpellSymbols.Pull, SpellSymbols.Left, SpellSymbols.Right, SpellSymbols.Push}},
-    {"Ice Ball", new List<SpellSymbols>{SpellSymbols.Right, SpellSymbols.Left, SpellSymbols.Right, SpellSymbols.Pull}},
-    {"Poison Arrow", new List<SpellSymbols>{SpellSymbols.Pull, SpellSymbols.Right, SpellSymbols.Push}},
-    {"Poison Ball", new List<SpellSymbols>{SpellSymbols.Pull, SpellSymbols.Left, SpellSymbols.Push, SpellSymbols.Push}},
-    {"Earth Arrow", new List<SpellSymbols>{SpellSymbols.Pull, SpellSymbols.Left, SpellSymbols.Push}},
-    {"Earth Ball", new List<SpellSymbols>{SpellSymbols.Pull, SpellSymbols.Left, SpellSymbols.Pull, SpellSymbols.Push}},
-    {"Telekinesis", new List<SpellSymbols>{SpellSymbols.Push, SpellSymbols.Pull, SpellSymbols.Left, SpellSymbols.Right, SpellSymbols.Pull, SpellSymbols.Pull}},
-    {"Flight", new List<SpellSymbols>{SpellSymbols.Push, SpellSymbols.Pull, SpellSymbols.Right, SpellSymbols.Left, SpellSymbols.Push, SpellSymbols.Push}},
+    {"Freeze Ball", new List<SpellSymbols>{SpellSymbols.Lift, SpellSymbols.Left, SpellSymbols.Right, SpellSymbols.Drop}},
+    {"Poison Arrow", new List<SpellSymbols>{SpellSymbols.Pull, SpellSymbols.Drop, SpellSymbols.Push}},
+    {"Poison Aura", new List<SpellSymbols>{SpellSymbols.Pull, SpellSymbols.Drop, SpellSymbols.Lift, SpellSymbols.Drop}},
+    {"Earth Arrow", new List<SpellSymbols>{SpellSymbols.Pull, SpellSymbols.Lift, SpellSymbols.Push}},
+    {"Earth Ball", new List<SpellSymbols>{SpellSymbols.Pull, SpellSymbols.Lift, SpellSymbols.Pull, SpellSymbols.Push}},
+    {"Telekinesis", new List<SpellSymbols>{SpellSymbols.Push, SpellSymbols.Pull, SpellSymbols.Left, SpellSymbols.Right, SpellSymbols.Lift, SpellSymbols.Drop}},
+    {"Flight", new List<SpellSymbols>{SpellSymbols.Push, SpellSymbols.Pull, SpellSymbols.Right, SpellSymbols.Left, SpellSymbols.Lift, SpellSymbols.Lift}},
   };
 
   public static Dictionary<string, SpellEffect> SpellEffectDictionary = new Dictionary<string, SpellEffect>()

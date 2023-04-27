@@ -9,6 +9,7 @@ public class SpellCasting : MonoBehaviour
 {
     [SerializeField] StarterAssets.FirstPersonController _fPController;
     [SerializeField] SelectionManager _selectionManager;
+    [SerializeField] StarterAssets.StarterAssetsInputs _input;
     [SerializeField] FireProjectiles _fireProj;
     [SerializeField] SubscribeTrain _subscribeTrain;
     [SerializeField] TMP_Text spellText;
@@ -16,7 +17,7 @@ public class SpellCasting : MonoBehaviour
     [SerializeField] TMP_Text cooldownText;
     [SerializeField] float max_force = 10.0f;
     [SerializeField] GameObject aura;
-    public static string currentSpell = "Flight";
+    public static string currentSpell = "Telekinesis";
     static readonly object _object = new object();  
 
     private float _curSpellCD;
@@ -32,8 +33,6 @@ public class SpellCasting : MonoBehaviour
     private static string _mcText = "";
     private static string action = "";
     private static double power = 0.5;
-    private static double currentTime = 0;
-    private double lastUpdatedTime = 0;
     private double cooldownStartTime = 0;
     private double cooldownStatus = 0;
     #endregion
@@ -60,13 +59,16 @@ public class SpellCasting : MonoBehaviour
         {
             if (!subscribed)
             {
-                subscribed = true;
-                _subscribeTrain.Subscribe();
+                if(TrainingProcessing.Instance.IsProfileConnected())
+                {
+                    subscribed = true;
+                    _subscribeTrain.Subscribe();
+                }
 
                 //Default values if not subscribed for testing
                 power = 0.5;
-                action = "right";
-                _mcText = "right 0.5";
+                action = "pull";
+                _mcText = "pull";
             }
             _spellActive = status;
         }
@@ -119,6 +121,7 @@ public class SpellCasting : MonoBehaviour
             if(aura.activeSelf)
                 aura.SetActive(false);
             _selectionManager.ObjectInUse = false;
+            _fPController.Telekinesis = false;
             _fPController.Flying = false;
         }
     }
@@ -130,6 +133,7 @@ public class SpellCasting : MonoBehaviour
             _spellActive = false;
             _spellOnCD = false;
             _selectionManager.ObjectInUse = false;
+            _fPController.Telekinesis = false;
             _fPController.Flying = false;
         }
     }
@@ -166,6 +170,7 @@ public class SpellCasting : MonoBehaviour
                     Aura();
                     break;
                 case Spells.SpellType.Telekinesis:
+                    _fPController.Telekinesis = true;
                     Telekinesis(false);
                     break;
                 case Spells.SpellType.Flight:
@@ -195,30 +200,20 @@ public class SpellCasting : MonoBehaviour
                 aura.SetActive(true);
             if (self)
             {
-                
-                // if (currentTime>lastUpdatedTime)
-                // {
-                    Debug.Log("Flying");
-                    Spells.SpellSymbols sym = RecognizeSymbol(action);
-                    Move(gameObject, self, sym, power);
-                // }
+                Debug.Log("Flying");
+                Spells.SpellSymbols sym = RecognizeSymbol(action);
+                Move(gameObject, self, sym, power);
             }
             else
             {
-                
                 _selectionManager.ObjectInUse = true;
-
-                // if (currentTime>lastUpdatedTime)
-                // {
-                    Debug.Log("Telekinesis");
-                    if (_selectionManager.SelectedObject != null)
-                    {
-                        Spells.SpellSymbols sym = RecognizeSymbol(action);
-                        Move(_selectionManager.SelectedObject, self, sym, power);
-                    }
-                // }
+                Debug.Log("Telekinesis");
+                if (_selectionManager.SelectedObject != null)
+                {
+                    Spells.SpellSymbols sym = RecognizeSymbol(action);
+                    Move(_selectionManager.SelectedObject, self, sym, power);
+                }
             }
-            // lastUpdatedTime = currentTime;
         }
         
     }
@@ -229,7 +224,7 @@ public class SpellCasting : MonoBehaviour
         switch(sym)
         {
             case Spells.SpellSymbols.Neutral:
-                Neutral(target, self);
+                //Neutral(target, self);
                 break;
             case Spells.SpellSymbols.Push:
                 Push(target, self, ((float)multiplier));
@@ -247,11 +242,20 @@ public class SpellCasting : MonoBehaviour
                 Lift(target, self, ((float)multiplier));
                 break;
             case Spells.SpellSymbols.Drop:
-                if(!_fPController.Grounded)
+                if(!_fPController.Grounded || !self)
                     Drop(target, self, ((float)multiplier));
                 break;
             default:
                 break;
+        }
+        if (_input.jump)
+        {
+            Lift(target, self, 0.5f);
+        }
+        else if(_input.drop)
+        {
+            if(!_fPController.Grounded || !self)
+                Drop(target, self, 0.5f);
         }
     }
 
@@ -262,27 +266,26 @@ public class SpellCasting : MonoBehaviour
             Debug.Log("Mental Command Received");
             action = data.Act;
             power = data.Pow;
-            currentTime = data.Time;
             _mcText = action + " [" + power + "]";
         }
     }
 
     private Spells.SpellSymbols RecognizeSymbol(string symbol)
   {
-    switch(symbol)
+    switch(symbol.ToLower())
     {
       case "push":
         return Spells.SpellSymbols.Push;
       case "pull":
         return Spells.SpellSymbols.Pull;
       case  "right":
-        return Spells.SpellSymbols.Lift;
+        return Spells.SpellSymbols.Right;
       case "left":
+        return Spells.SpellSymbols.Left;
+      case "lift":
+        return Spells.SpellSymbols.Lift;
+      case "drop":
         return Spells.SpellSymbols.Drop;
-    //   case "lift":
-    //     return Spells.SpellSymbols.Lift;
-    //   case "drop":
-    //     return Spells.SpellSymbols.Drop;
       default:
         return Spells.SpellSymbols.None;
     }
@@ -311,12 +314,12 @@ public class SpellCasting : MonoBehaviour
         if (self)
         {
             CharacterController controller = target.GetComponent<CharacterController>();
-            controller.Move(Vector3.forward * multiplier*max_force * Time.deltaTime);
+            controller.Move(gameObject.transform.forward * multiplier*max_force * Time.deltaTime);
         }
         else
         {
             Rigidbody rigid = target.GetComponent<Rigidbody>();
-            rigid.AddForce(Vector3.forward * multiplier*max_force, forceType);
+            rigid.AddForce(gameObject.transform.forward * multiplier*max_force, forceType);
         }
     }
   }
@@ -327,12 +330,12 @@ public class SpellCasting : MonoBehaviour
         if (self)
         {
             CharacterController controller = target.GetComponent<CharacterController>();
-            controller.Move(Vector3.back * multiplier*max_force * Time.deltaTime);
+            controller.Move(-gameObject.transform.forward * multiplier*max_force * Time.deltaTime);
         }
         else
         {
             Rigidbody rigid = target.GetComponent<Rigidbody>();
-            rigid.AddForce(Vector3.back * multiplier*max_force, forceType);
+            rigid.AddForce(-gameObject.transform.forward * multiplier*max_force, forceType);
         }
     }
   }
@@ -343,12 +346,12 @@ public class SpellCasting : MonoBehaviour
         if (self)
         {
             CharacterController controller = target.GetComponent<CharacterController>();
-            controller.Move(Vector3.right * multiplier*max_force * Time.deltaTime);
+            controller.Move(gameObject.transform.right * multiplier*max_force * Time.deltaTime);
         }
         else
         {
             Rigidbody rigid = target.GetComponent<Rigidbody>();
-            rigid.AddForce(Vector3.right * multiplier*max_force, forceType);
+            rigid.AddForce(gameObject.transform.right * multiplier*max_force, forceType);
         }
     }
   }
@@ -359,12 +362,12 @@ public class SpellCasting : MonoBehaviour
         if (self)
         {
             CharacterController controller = target.GetComponent<CharacterController>();
-            controller.Move(Vector3.left * multiplier*max_force * Time.deltaTime);
+            controller.Move(-gameObject.transform.right * multiplier*max_force * Time.deltaTime);
         }
         else
         {
             Rigidbody rigid = target.GetComponent<Rigidbody>();
-            rigid.AddForce(Vector3.left * multiplier*max_force, forceType);
+            rigid.AddForce(-gameObject.transform.right * multiplier*max_force, forceType);
         }
     }
   }

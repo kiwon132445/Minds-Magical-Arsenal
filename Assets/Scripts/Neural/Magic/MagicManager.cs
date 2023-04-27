@@ -1,13 +1,15 @@
 using UnityEngine;
+using UnityEngine.UI;
 using TMPro;
 using EmotivUnityPlugin;
 using System.Collections.Generic;
 using System.Linq;
+using Newtonsoft.Json.Linq;
 
 public class MagicManager : MonoBehaviour
 {
   [SerializeField]
-  private GameObject _game;
+  private MagicControls _mgControls;
   [SerializeField]
   private ControlNode _controlNode;
   [SerializeField]
@@ -28,16 +30,21 @@ public class MagicManager : MonoBehaviour
   private GameObject _trainingResultUI;
   [SerializeField]
   private TrainingResult _trainingResult;
+  [SerializeField]
+  private NumberOfTrainings _numTraining;
 
+  private static JObject trainingNumbers;
+  private static bool numReceived;
   private static string _mcText = "";
   private static string action = "";
   private static double power = 0.0;
   private static double currentTime = 0.0;
   private static double lastUpdatedTime = 0.0;
-
+  //How much an action was trained
   private int countTrained = 0;
   private double powerSum = 0.0;
   private double trainingStartTime = 0.0;
+  private string curTrainingAction;
   private Spells.SpellSymbols trainingTarget;
   private bool _isTraining = false;
   private List<Spells.SpellSymbols> formula;
@@ -46,16 +53,17 @@ public class MagicManager : MonoBehaviour
   static readonly object _object = new object();  
   private void Awake() {
     _subscribeTrain.MentalUpdate += MentalUpdate;
+    _subscribeTrain.TrainedActionUpdate += TrainedActionUpdate;
   }
 
   private void OnDestroy() {
     _subscribeTrain.MentalUpdate -= MentalUpdate;
-    _trainingProcessing.SaveCurProfile(_trainingProcessing.StaticHeadset.HeadsetID);
+    _subscribeTrain.TrainedActionUpdate -= TrainedActionUpdate;
+    //_trainingProcessing.SaveCurProfile(_trainingProcessing.StaticHeadset.HeadsetID);
   }
 
   public void Deactivate()
   {
-    ReturnToDefault();
     GameManager.Instance.ActivateGame(true);
     Cursor.lockState = CursorLockMode.Locked;
     GameManager.Instance.ActivateMagic(false);
@@ -64,19 +72,33 @@ public class MagicManager : MonoBehaviour
   public void Activate()
   {
     _subscribeTrain.Subscribe();
-    ReturnToDefault();
+    ReturnToDefault(false);
+    if (TrainingProcessing.Instance.IsProfileConnected())
+      _subscribeTrain.GetTrainedActions();
   }
 
   public void BeginTraining()
   {
-      _isTraining = true;
-      countTrained = 0;
-      powerSum = 0.0;
-      trainingStartTime = currentTime;
-      _subscribeTrain.StartTrain(trainingChoice.captionText.text.ToLower());
-      trainingTarget = RecognizeSymbol(trainingChoice.captionText.text.ToLower());
-      _controlNode.Training(trainingTarget);
+    if (_isTraining)
+    {
+      _subscribeTrain.ResetTraining(curTrainingAction);
+    }
+    _isTraining = true;
+    countTrained = 0;
+    powerSum = 0.0;
+    trainingStartTime = currentTime;
+    curTrainingAction = trainingChoice.captionText.text.ToLower();
+    _subscribeTrain.StartTrain(curTrainingAction);
+    trainingTarget = RecognizeSymbol(curTrainingAction);
+    _controlNode.Training(trainingTarget);
   }
+
+  public void DeleteAction()
+  {
+    _subscribeTrain.DeleteTrain(trainingChoice.captionText.text.ToLower());
+    _numTraining.ChangeValues(trainingChoice.captionText.text.ToLower(), 0);
+  }
+
   private void Countdown()
   {
       if(currentTime - trainingStartTime >= trainingTimeLimit)
@@ -104,15 +126,16 @@ public class MagicManager : MonoBehaviour
       _subscribeTrain.StopTrain(true);
       Debug.Log(_trainingProcessing.StaticHeadset.HeadsetID);
       _trainingProcessing.SaveCurProfile(_trainingProcessing.StaticHeadset.HeadsetID);
-      ReturnToDefault(true);
+      ReturnToDefault(false, true);
   }
   public void RejectTraining()
   {
       _subscribeTrain.StopTrain(false);
       _trainingProcessing.SaveCurProfile(_trainingProcessing.StaticHeadset.HeadsetID);
-      ReturnToDefault(true);
+      ReturnToDefault(false, true);
   }
-  public void ReturnToDefault(bool butPressed=false)
+  
+  public void ReturnToDefault(bool resetFormula, bool butPressed=false)
   {
       _mcText = "";
       action = "";
@@ -131,8 +154,7 @@ public class MagicManager : MonoBehaviour
       if (_trainingResultUI.activeSelf && butPressed)
       {
         _trainingResultUI.SetActive(false);
-        _subscribeTrain.StopTrain(false);
-        _trainingProcessing.SaveCurProfile(_trainingProcessing.StaticHeadset.HeadsetID);
+        _subscribeTrain.GetTrainedActions();
       }
 
       _controlNode.ResetPos();
@@ -147,6 +169,15 @@ public class MagicManager : MonoBehaviour
       power = data.Pow;
       currentTime = data.Time;
       _mcText = action + " [" + power + "]";
+    }
+  }
+
+  private void TrainedActionUpdate(object sender, JObject data)
+  {
+    lock(_object)
+    {
+      numReceived = true;
+      trainingNumbers = data;
     }
   }
 
@@ -270,24 +301,27 @@ public class MagicManager : MonoBehaviour
   {
     lock(_object)
     {
-      if(currentMatching.Count > 1)
+      if (currentMatching != null)
       {
-        foreach (KeyValuePair<string, List<Spells.SpellSymbols>> item in currentMatching)
+        if(currentMatching.Count > 1)
         {
-          if (MatchFormula(item.Value, formula))
+          foreach (KeyValuePair<string, List<Spells.SpellSymbols>> item in currentMatching)
           {
-            SpellCasting.StoreSpell(item.Key);
-            Deactivate();
-            break;
+            if (MatchFormula(item.Value, formula))
+            {
+              SpellCasting.StoreSpell(item.Key);
+              Deactivate();
+              break;
+            }
           }
         }
-      }
-      if(currentMatching.Count == 1)
-      {
-        Debug.Log(currentMatching.ElementAt(0).Key);
-        //_game.SetActive(true);
-        SpellCasting.StoreSpell(currentMatching.ElementAt(0).Key);
-        Deactivate();
+        if(currentMatching.Count == 1)
+        {
+          Debug.Log(currentMatching.ElementAt(0).Key);
+          //_game.SetActive(true);
+          SpellCasting.StoreSpell(currentMatching.ElementAt(0).Key);
+          Deactivate();
+        }
       }
     }
   }
@@ -313,19 +347,61 @@ public class MagicManager : MonoBehaviour
     lock (_object)
     {
       if (currentTime>lastUpdatedTime)
+      {
+        Spells.SpellSymbols sym = RecognizeSymbol(action);
+        if(_isTraining)
         {
-          Spells.SpellSymbols sym = RecognizeSymbol(action);
-          if(_isTraining)
+          Countdown();
+          countTrained++;
+          if (sym == trainingTarget)
           {
-            Countdown();
-            countTrained++;
-            if (sym == trainingTarget)
-              {powerSum += power;}
+            if (sym == Spells.SpellSymbols.Neutral)
+            {
+              powerSum += 1;
+            } else
+            {
+              powerSum += power;
+            }
           }
-          _controlNode.Move(sym, power);
-          lastUpdatedTime = currentTime;
+        }
+        Move();
+        lastUpdatedTime = currentTime;
+      }
+      else
+      {
+        if (_mgControls.lift)
+        {
+          Debug.Log("Lift");
+          _controlNode.Move(Spells.SpellSymbols.Lift, 0.5f);
+        }
+        else if (_mgControls.drop)
+        {
+          _controlNode.Move(Spells.SpellSymbols.Drop, 0.5f);
         }
       }
+      
+      if (numReceived)
+      {
+        _numTraining.LoadTrainingData(trainingNumbers);
+        numReceived = false;
+      }
     }
-    
+  }
+
+  private void Move()
+  {
+    if (_mgControls.lift)
+    {
+      _controlNode.Move(Spells.SpellSymbols.Lift, 0.5f);
+    }
+    else if (_mgControls.drop)
+    {
+      _controlNode.Move(Spells.SpellSymbols.Drop, 0.5f);
+    }
+    else
+    {
+      Spells.SpellSymbols sym = RecognizeSymbol(action);
+      _controlNode.Move(sym, power);
+    }
+  }
 }

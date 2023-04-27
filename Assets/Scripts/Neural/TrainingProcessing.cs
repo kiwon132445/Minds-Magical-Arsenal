@@ -83,6 +83,7 @@ public class TrainingProcessing
     public void SaveCurProfile(string headsetID)
     {
         lock (_object) {
+            Debug.Log(_curProfileConnected.ProfileID + " " + headsetID);
             _bciTraining.SaveProfile(_curProfileConnected.ProfileID, headsetID);
         }
     }
@@ -120,6 +121,7 @@ public class TrainingProcessing
 
     public bool IsProfileConnected() {
         lock (_object) {
+            checkProfileConnected();
             return _isConnect;
         }
     }

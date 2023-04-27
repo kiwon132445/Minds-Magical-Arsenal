@@ -7,6 +7,7 @@ TagManager:
   - CinemachineTarget
   - Object
   - Projectile
+  - SpawnPoint
   layers:
   - Default
   - TransparentFX

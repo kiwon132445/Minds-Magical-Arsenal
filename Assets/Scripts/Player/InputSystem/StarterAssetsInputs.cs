@@ -14,6 +14,8 @@ namespace StarterAssets
 		public bool cast;
 		public bool magicSpace;
 		public bool option;
+		public bool drop;
+		public bool showControls;
 
 		[Header("Movement Settings")]
 		public bool analogMovement;
@@ -58,6 +60,16 @@ namespace StarterAssets
 			OptionInput(value.isPressed);
 		}
 
+		public void OnDrop(InputValue value)
+		{
+			DropInput(value.isPressed);
+		}
+
+		public void OnShowControl(InputValue value)
+		{
+			ShowControlInput(value.isPressed);
+		}
+
 
 		public void MoveInput(Vector2 newMoveDirection)
 		{
@@ -91,6 +103,14 @@ namespace StarterAssets
 		public void OptionInput(bool optionState)
 		{
 			option = optionState;
+		}
+		public void DropInput(bool dropState)
+		{
+			drop = dropState;
+		}
+		public void ShowControlInput(bool showState)
+		{
+			showControls = showState;
 		}
 		
 		private void OnApplicationFocus(bool hasFocus)

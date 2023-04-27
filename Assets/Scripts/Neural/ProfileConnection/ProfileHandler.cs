@@ -49,7 +49,7 @@ namespace dirox.emotiv.controller
 
         private void ShowProfile()
         {
-            _profileController.Refresh ();
+            //_profileController.Refresh ();
             _profileController.ClearProfileList ();
             
             if (TrainingProcessing.Instance.GetProfileList().Count == 0) 
@@ -65,7 +65,7 @@ namespace dirox.emotiv.controller
 
         private void ShowProfileListForm()
         {
-            _profileController.Refresh ();
+            //_profileController.Refresh ();
             _profileController.Activate ();
             ShowProfile ();
         }

@@ -63,7 +63,7 @@ namespace dirox.emotiv.controller
             _contactQualityController.Deactivate();
             _connectionIndicatorGroup.Deactivate ();
 
-            _connectHeadsetController.Refresh ();
+            //_connectHeadsetController.Refresh ();
             _connectHeadsetController.Activate ();
             ShowHeadset ();
         }

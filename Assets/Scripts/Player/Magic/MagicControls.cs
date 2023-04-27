@@ -7,6 +7,8 @@ public class MagicControls : MonoBehaviour
 {
     [SerializeField]
     private MagicManager _magicManager;
+    public bool lift;
+    public bool drop;
 
     public void OnLock(InputValue value)
     {
@@ -24,9 +26,26 @@ public class MagicControls : MonoBehaviour
             _magicManager.Cast();
         }
     }
-    public void OnForceCast(InputValue value)
+    public void OnLift(InputValue value)
     {
-        Debug.Log("OnForceCast");
+        Debug.Log("OnLift");
+        if(value.isPressed)
+        {
+            Debug.Log("OnLift");
+            lift = true;
+        }
+        else
+            lift = false;
+    }
+    public void OnDrop(InputValue value)
+    {
+        if(value.isPressed)
+        {
+            Debug.Log("OnDrop");
+            drop = true;
+        }
+        else
+            drop = false;
     }
 
     public void OnResetMode(InputValue value)
@@ -34,7 +53,7 @@ public class MagicControls : MonoBehaviour
         Debug.Log("OnResetMode");
         if(value.isPressed)
         {
-            _magicManager.ReturnToDefault();
+            _magicManager.ReturnToDefault(true);
         }
     }
 

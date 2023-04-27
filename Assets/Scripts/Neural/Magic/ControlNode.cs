@@ -7,14 +7,14 @@ public class ControlNode : MonoBehaviour
 {
   static readonly object _object = new object();
   Vector3 _position;
-  Rigidbody _rigid;
+  public Rigidbody _rigid;
   
   [SerializeField]
   float neutralDirSpeed = 2f;
   [SerializeField]
   bool inNeutral = false;
   [SerializeField]
-  float max_speed = 0.001f;
+  float max_speed = 15f;
   [SerializeField]
   bool _isTraining = false;
 
@@ -34,12 +34,9 @@ public class ControlNode : MonoBehaviour
     Spells.SpellSymbols sym = TranslateNode(other.gameObject.name);
     if (sym == Spells.SpellSymbols.Neutral)
     {
-      CurrentNode = Spells.SpellSymbols.Neutral;
-      inNeutral = true;
-      _rigid.velocity = Vector3.zero;
       ResetPos();
-      return;
     }
+    else
       CurrentNode = sym;
   }
   private void OnTriggerExit(Collider other)
@@ -148,6 +145,10 @@ public class ControlNode : MonoBehaviour
   {
     lock(_object)
     {
+      CurrentNode = Spells.SpellSymbols.Neutral;
+      _rigid.velocity = Vector3.zero;
+      inNeutral = true;
+
       x_lock = y_lock = z_lock = false;
       gameObject.transform.localPosition = _position;
     }

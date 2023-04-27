@@ -54,8 +54,10 @@ namespace StarterAssets
 		public GameObject _magic;
 		public MagicManager _magicManager;
 		public SpellCasting _spellCasting;
+		public ToggleDisplay _controlsDisplay;
 
 		public bool Flying;
+		public bool Telekinesis;
 
 		// cinemachine
 		private float _cinemachineTargetPitch;
@@ -109,13 +111,13 @@ namespace StarterAssets
 		private void Update()
 		{
 			Options();
+			ShowControls();
 			MagicLoadSpell();
 			Cast();
 			JumpAndGravity();
 			GroundedCheck();
 			if (!Flying)
 				Move();
-			
 		}
 
 		private void LateUpdate()
@@ -215,7 +217,7 @@ namespace StarterAssets
 					}
 
 					// Jump
-					if (_input.jump && _jumpTimeoutDelta <= 0.0f)
+					if (_input.jump && _jumpTimeoutDelta <= 0.0f && !Telekinesis)
 					{
 						// the square root of H * -2 * G = how much velocity needed to reach desired height
 						_verticalVelocity = Mathf.Sqrt(JumpHeight * -2f * Gravity);
@@ -239,7 +241,7 @@ namespace StarterAssets
 					}
 
 					// if we are not grounded, do not jump
-					_input.jump = false;
+					//_input.jump = false;
 				}
 				// apply gravity over time if under terminal (multiply by delta time twice to linearly speed up over time)
 				if (_verticalVelocity < _terminalVelocity)
@@ -305,6 +307,10 @@ namespace StarterAssets
 		public void PlayerInputActive(bool active)
 		{
 			_playerInput.enabled = active;
+		}
+		private void ShowControls()
+		{
+			_controlsDisplay.ShowHideManual(_input.showControls);
 		}
 	}
 }
