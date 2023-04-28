@@ -35,9 +35,9 @@ public class ObjectReturn : MonoBehaviour
             if (start >= Return_Time)
             {
                 inSpawn = true;
+                _rigidbody.velocity = Vector3.zero;
                 gameObject.transform.position = _position;
                 gameObject.transform.rotation = _rotation;
-                _rigidbody.velocity = Vector3.zero;
             }
         }
     }
