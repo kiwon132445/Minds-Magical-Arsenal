@@ -33,6 +33,7 @@ public class MagicManager : MonoBehaviour
   [SerializeField]
   private NumberOfTrainings _numTraining;
 
+  static readonly object _object = new object();
   private static JObject trainingNumbers;
   private static bool numReceived;
   private static string _mcText = "";
@@ -40,17 +41,20 @@ public class MagicManager : MonoBehaviour
   private static double power = 0.0;
   private static double currentTime = 0.0;
   private static double lastUpdatedTime = 0.0;
-  //How much an action was trained
+  
   private int countTrained = 0;
   private double powerSum = 0.0;
   private double trainingStartTime = 0.0;
   private string curTrainingAction;
   private Spells.SpellSymbols trainingTarget;
   private bool _isTraining = false;
+  private double _trainingDataTimer;
+  const double Training_Data_Interval = 3;
+
   private List<Spells.SpellSymbols> formula;
   private Dictionary<string, List<Spells.SpellSymbols>> currentMatching;
   private TrainingProcessing _trainingProcessing = TrainingProcessing.Instance;
-  static readonly object _object = new object();  
+  
   private void Awake() {
     _subscribeTrain.MentalUpdate += MentalUpdate;
     _subscribeTrain.TrainedActionUpdate += TrainedActionUpdate;
@@ -124,14 +128,11 @@ public class MagicManager : MonoBehaviour
   public void AcceptTraining()
   {
       _subscribeTrain.StopTrain(true);
-      Debug.Log(_trainingProcessing.StaticHeadset.HeadsetID);
-      _trainingProcessing.SaveCurProfile(_trainingProcessing.StaticHeadset.HeadsetID);
       ReturnToDefault(false, true);
   }
   public void RejectTraining()
   {
       _subscribeTrain.StopTrain(false);
-      _trainingProcessing.SaveCurProfile(_trainingProcessing.StaticHeadset.HeadsetID);
       ReturnToDefault(false, true);
   }
   
@@ -153,6 +154,7 @@ public class MagicManager : MonoBehaviour
 
       if (_trainingResultUI.activeSelf && butPressed)
       {
+        _trainingProcessing.SaveCurProfile(_trainingProcessing.StaticHeadset.HeadsetID);
         _trainingResultUI.SetActive(false);
         _subscribeTrain.GetTrainedActions();
       }
@@ -176,8 +178,9 @@ public class MagicManager : MonoBehaviour
   {
     lock(_object)
     {
-      numReceived = true;
+      Debug.Log("Training Data Received");
       trainingNumbers = data;
+      numReceived = true;
     }
   }
 
@@ -343,11 +346,12 @@ public class MagicManager : MonoBehaviour
   private void Update()
   {
     printFormula();
-    _mcDisplayText.text = _mcText;
+    
     lock (_object)
     {
       if (currentTime>lastUpdatedTime)
       {
+        _mcDisplayText.text = _mcText;
         Spells.SpellSymbols sym = RecognizeSymbol(action);
         if(_isTraining)
         {
@@ -369,6 +373,7 @@ public class MagicManager : MonoBehaviour
       }
       else
       {
+        //_mcDisplayText.text = "None";
         if (_mgControls.lift)
         {
           Debug.Log("Lift");
@@ -382,8 +387,16 @@ public class MagicManager : MonoBehaviour
       
       if (numReceived)
       {
+        _trainingDataTimer = 0;
         _numTraining.LoadTrainingData(trainingNumbers);
         numReceived = false;
+      }
+
+      _trainingDataTimer += Time.deltaTime;
+      if (_trainingDataTimer >= Training_Data_Interval)
+      {
+        _trainingDataTimer = 0;
+        _subscribeTrain.GetTrainedActions();
       }
     }
   }

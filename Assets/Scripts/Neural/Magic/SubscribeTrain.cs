@@ -60,6 +60,7 @@ public class SubscribeTrain : MonoBehaviour
     {
         if (!TrainingProcessing.Instance.IsProfileConnected())
             return;
+        Debug.Log("Training request sent");
         _bciTraining.StartTraining(action, "mentalCommand");
     }
 
@@ -67,6 +68,7 @@ public class SubscribeTrain : MonoBehaviour
     {
         if (!TrainingProcessing.Instance.IsProfileConnected())
             return;
+        Debug.Log("Reset Training request sent");
         _bciTraining.ResetTraining(action, "mentalCommand");
     }
 
@@ -74,6 +76,7 @@ public class SubscribeTrain : MonoBehaviour
     {
         if (!TrainingProcessing.Instance.IsProfileConnected())
             return;
+        Debug.Log("Delete Training request sent");
         _bciTraining.EraseTraining(action, "mentalCommand");
     }
     
@@ -83,10 +86,12 @@ public class SubscribeTrain : MonoBehaviour
             return;
         if (accept)
         {
+            Debug.Log("Accept Training request sent");
             _bciTraining.AcceptTraining("mentalCommand");
         }
         else
         {
+            Debug.Log("Reject Training request sent");
             _bciTraining.RejectTraining("mentalCommand");
         }
     }
@@ -95,12 +100,12 @@ public class SubscribeTrain : MonoBehaviour
     {
         if (!TrainingProcessing.Instance.IsProfileConnected())
             return;
+        Debug.Log("Training Data request sent");
         _bciTraining.GetTrainedSignatureActions("mentalCommand");
     }
 
     public void OnGetTrainedSignatureActions(object sender, JObject data)
     {
-        Debug.Log("Trained Actions Received");
         TrainedActionUpdate(sender, data);
     }
 
@@ -113,9 +118,6 @@ public class SubscribeTrain : MonoBehaviour
 
     private void OnMentalCommandReceived(object sender, MentalCommandEventArgs data)
     {
-        // Debug.Log("Mental event received");
-        // string dataText = "com data: " + data.Act + ", power: " + data.Pow.ToString() + ", time " + data.Time.ToString();
-        //Debug.Log(dataText);
         MentalUpdate(sender, data);
     }
 

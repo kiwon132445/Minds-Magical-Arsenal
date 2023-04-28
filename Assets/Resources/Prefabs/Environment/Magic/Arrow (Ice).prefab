@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 2863534146344851519}
   - component: {fileID: 2863534146344851516}
   - component: {fileID: 2863534146344851518}
+  - component: {fileID: 3793211497010513815}
   m_Layer: 0
   m_Name: Arrow (Ice)
   m_TagString: Projectile
@@ -63,6 +64,19 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 1
+--- !u!114 &3793211497010513815
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2863534146344851517}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c2c77e77a8e751c46928ba7b49faca37, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  speed: 20
 --- !u!1 &4914127631382668312
 GameObject:
   m_ObjectHideFlags: 0
