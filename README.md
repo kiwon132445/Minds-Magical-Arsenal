@@ -13,3 +13,13 @@ Requirements
   - Ram - 32GB
   - GPU - Nvidia 3080
   - Operating System - Windows 10
+
+Usage Instructions
+- Go to folder 'Documentation'
+- Open either the docx or pdf file
+- Go to section '3.2.2' for instructions on setting up the game
+- Install the Emotiv Launcher on 'https://www.emotiv.com/'
+- Install Emotiv BCI from the launcher
+- Then go to section '2.5.3' on how to run the game
+- When logging in for the first time, permission needs to be given from the Emotiv Launcher before the game is capable of launching
+- If headset is not available, create a virtual headset and manipulate their parameters as an act in for the original headset controls
